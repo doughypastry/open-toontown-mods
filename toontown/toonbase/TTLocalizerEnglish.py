@@ -5372,10 +5372,6 @@ GagShopPlayerDisconnected = '%s has disconnected'
 GagShopPlayerExited = '%s has exited'
 GagShopPlayerPlayAgain = 'Play Again'
 GagShopPlayerBuying = 'Buying'
-GenderShopQuestionMickey = 'To make a boy toon, click on me!'
-GenderShopQuestionMinnie = 'To make a girl toon, click on me!'
-GenderShopFollow = 'Follow me!'
-GenderShopSeeYou = 'See you later!'
 GenderShopBoyButtonText = 'Boy'
 GenderShopGirlButtonText = 'Girl'
 BodyShopHead = 'Head'
@@ -5387,7 +5383,6 @@ ColorShopBody = 'Body'
 ColorShopLegs = 'Legs'
 ColorShopParts = 'Multi Color'
 ColorShopAll = 'Single Color'
-ClothesShopShorts = 'Shorts'
 ClothesShopShirt = 'Shirts'
 ClothesShopBottoms = 'Bottoms'
 PromptTutorial = "Congratulations!!\nYou are Toontown's newest citizen!\n\nWould you like to continue to the Toontorial or teleport directly to Toontown Central?"
@@ -5910,18 +5905,10 @@ ShoesStylesDescriptions = {'sat1': 'Green Athletic Shoes',
  'sat4': 'Black Athletic Shoes',
  'shw1': 'Pirate Shoes',
  'shw2': 'Toonosaur Feet'}
-AccessoryNamePrefix = {0: 'hat unisex ',
- 1: 'glasses unisex ',
- 2: 'backpack unisex ',
- 3: 'shoes unisex ',
- 4: 'hat boy ',
- 5: 'glasses boy ',
- 6: 'backpack boy ',
- 7: 'shoes boy ',
- 8: 'hat girl ',
- 9: 'glasses girl ',
- 10: 'backpack girl ',
- 11: 'shoes girl '}
+AccessoryNamePrefix = {0: 'hat ',
+ 1: 'glasses ',
+ 2: 'backpack ',
+ 3: 'shoes '}
 AwardManagerAccessoryNames = {}
 AccessoryTypeNames = {}
 for accessoryId in list(CatalogAccessoryItemGlobals.AccessoryTypes.keys()):
@@ -6221,12 +6208,6 @@ BottomStylesDescriptions = {'bbs1': 'plain w/ pockets',
  'hw_gs6': 'Halloween Vampire NoCape Shorts female',
  'hw_gs7': 'Halloween Dinosaur Shorts female',
  'hw_gsk1': 'Halloween Pirate Skirt'}
-AwardMgrBoy = 'boy'
-AwardMgrGirl = 'girl'
-AwardMgrUnisex = 'unisex'
-AwardMgrShorts = 'shorts'
-AwardMgrSkirt = 'skirt'
-AwardMgrShirt = 'shirt'
 SpecialEventMailboxStrings = {1: 'A special item from the Toon Council just for you!',
  2: "Here is your Melville's Fishing Tournament prize! Congratulations!",
  3: "Here is your Billy Budd's Fishing Tournament prize! Congratulations!",
@@ -6402,8 +6383,8 @@ FurnitureNames = {100: 'Armchair',
  2000: 'Candy Swing Set',
  2010: 'Cake Slide',
  3000: 'Banana Split Tub',
- 4000: 'Boy Trunk',
- 4010: 'Girl Trunk',
+ 4000: 'Trunk',
+ 4010: 'Trunk',
  10000: 'Short Pumpkin',
  10010: 'Tall Pumpkin',
  10020: 'Winter Tree',
@@ -6640,14 +6621,6 @@ ClothingTypeNames = {1001: 'Ghost Shirt',
  1801: 'Batty Moon Shirt',
  1802: 'Mittens Shirt'}
 AccessoryArticleNames = ('Hat',
- 'Glasses',
- 'Backpack',
- 'Shoes',
- 'Hat',
- 'Glasses',
- 'Backpack',
- 'Shoes',
- 'Hat',
  'Glasses',
  'Backpack',
  'Shoes')

@@ -737,14 +737,19 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
         for pathIndex in range(len(self.data['PATHS'])):
             path = self.data['PATHS'][pathIndex]
             subject = Toon.Toon()
-            gender = random.choice(['m', 'f'])
+            gender = random.choice(['m', 'f', 'n'])
             seed = int(random.random() * 571)
             if gender == 'm':
                 boy = 1
                 girl = 0
-            else:
+            elif gender == 'f':
                 boy = 0
                 girl = 1
+            else:
+                # 'n'eutral
+                boy = 0
+                girl = 0
+                gender = None
             subject.setName(namegen.randomNameMoreinfo(boy=boy, girl=girl)[-1])
             self.nameCounter += 1
             subject.setPickable(0)

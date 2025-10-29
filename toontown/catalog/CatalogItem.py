@@ -120,12 +120,6 @@ class CatalogItem:
     def isRental(self):
         return 0
 
-    def forBoysOnly(self):
-        return 0
-
-    def forGirlsOnly(self):
-        return 0
-
     def setLoyaltyRequirement(self, days):
         self.loyaltyDays = days
 

@@ -72,9 +72,8 @@ class GenderShop(StateData.StateData):
         self.__setGender(choice)
 
     def __setGender(self, choice):
+        # ??? Why does it ignore the choice?
         self.gender = 'm'
-        if self.toon:
-            self.gender = self.toon.style.gender
         messenger.send(self.doneEvent)
 
     def hideButtons(self):

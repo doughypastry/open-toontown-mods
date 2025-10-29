@@ -101,7 +101,7 @@ def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
 
 
 def teleportOut(attack, npc):
-    if npc.style.getGender() == 'm':
+    if npc.style.getClothes() != 'dress':
         a = ActorInterval(npc, 'bow')
     else:
         a = ActorInterval(npc, 'curtsy')

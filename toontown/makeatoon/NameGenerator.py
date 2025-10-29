@@ -241,10 +241,9 @@ class NameGenerator:
 
     def randomNameMoreinfo(self, boy = 0, girl = 0):
         if boy and girl:
-            self.error("A name can't be both boy and girl!")
-        if not boy and not girl:
-            boy = random.choice([0, 1])
-            girl = not boy
+            # Make gender neutral if you passed both.
+            boy = 0
+            girl = 0
         uberFlag = random.choice(['title-first',
          'title-last',
          'first',
@@ -276,16 +275,12 @@ class NameGenerator:
             titleList += self.boyTitles
         elif girl:
             titleList += self.girlTitles
-        else:
-            self.error('Must be boy or girl.')
         uberReturn[3] = random.choice(titleList)
         firstList = self.neutralFirsts[:]
         if boy:
             firstList += self.boyFirsts
         elif girl:
             firstList += self.girlFirsts
-        else:
-            self.error('Must be boy or girl.')
         uberReturn[4] = random.choice(firstList)
         lastPrefix = random.choice(self.lastPrefixes)
         lastSuffix = random.choice(self.lastSuffixes)

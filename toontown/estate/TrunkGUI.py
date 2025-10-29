@@ -29,7 +29,6 @@ class TrunkGUI(StateData.StateData):
         self.swapShoesEvent = swapShoesEvent
         self.deleteEvent = deleteEvent
         self.cancelEvent = cancelEvent
-        self.genderChange = 0
         self.verify = None
         return
 
@@ -323,10 +322,6 @@ class TrunkGUI(StateData.StateData):
         messenger.send('wakeup')
         task = Task(self.rotateToonR)
         taskMgr.add(task, self.taskName('rotateR'))
-
-    def setGender(self, gender):
-        self.ownerGender = gender
-        self.genderChange = 1
 
     def swapHat(self, offset):
         length = len(self.hats)

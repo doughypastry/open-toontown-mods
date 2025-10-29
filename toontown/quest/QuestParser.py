@@ -488,10 +488,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
 
     def parseLoadCCDialogue(self, line):
         token, varName, filenameTemplate = line
-        if self.toon.getStyle().gender == 'm':
-            classicChar = 'mickey'
-        else:
-            classicChar = 'minnie'
+        classicChar = 'mickey'
         filename = filenameTemplate % classicChar
         if base.config.GetString('language', 'english') == 'japanese':
             dialogue = base.loader.loadSfx(filename)
@@ -517,10 +514,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         token, name = line
         char = Char.Char()
         dna = CharDNA.CharDNA()
-        if self.toon.getStyle().gender == 'm':
-            charType = 'mk'
-        else:
-            charType = 'mn'
+        charType = 'mk'
         dna.newChar(charType)
         char.setDNA(dna)
         char.startEarTask()
@@ -720,10 +714,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         lineLength = len(line)
         avatarName = line[1]
         avatar = self.getVar(avatarName)
-        if self.toon.getStyle().gender == 'm':
-            chatString = eval('TTLocalizer.' + line[2] % 'Mickey')
-        else:
-            chatString = eval('TTLocalizer.' + line[2] % 'Minnie')
+        chatString = eval('TTLocalizer.' + line[2] % 'Mickey')
         quitButton, extraChatFlags, dialogueList = self.parseExtraChatArgs(line[3:])
         return Func(avatar.setLocalPageChat, chatString, quitButton, extraChatFlags, dialogueList)
 
@@ -735,10 +726,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         toAvatar = self.getVar(toAvatarKey)
         localizerAvatarName = toAvatar.getName().capitalize()
         toAvatarName = eval('TTLocalizer.' + localizerAvatarName)
-        if self.toon.getStyle().gender == 'm':
-            chatString = eval('TTLocalizer.' + line[3] % 'Mickey')
-        else:
-            chatString = eval('TTLocalizer.' + line[3] % 'Minnie')
+        chatString = eval('TTLocalizer.' + line[3] % 'Mickey')
         chatString = chatString.replace('%s', toAvatarName)
         quitButton, extraChatFlags, dialogueList = self.parseExtraChatArgs(line[4:])
         return Func(avatar.setLocalPageChat, chatString, quitButton, extraChatFlags, dialogueList)

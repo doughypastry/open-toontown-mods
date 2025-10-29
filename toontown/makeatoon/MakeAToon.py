@@ -98,10 +98,6 @@ class MakeAToon(StateData.StateData):
         base.playMusic(self.music, looping=1, volume=self.musicVolume)
         camera.setPosHpr(-5.7, -12.3501, 2.15, -24.8499, 2.73, 0)
         if self.warp:
-            if self.toon.style.torso[1] == 's':
-                self.toon.gender = 's'
-            else:
-                self.toon.gender = 'd'
             self.toon.reparentTo(render)
             self.toon.loop('neutral')
             self.toon.setPosHpr(-4.1, -2, 0, 200, 0, 0)

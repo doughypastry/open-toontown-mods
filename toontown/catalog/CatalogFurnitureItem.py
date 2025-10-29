@@ -77,25 +77,21 @@ for bankId, maxMoney in list(BankToMoney.items()):
     MoneyToBank[maxMoney] = bankId
 
 MaxBankId = 1350
+
+# This originally organized the closet IDs into 'boy' and 'girl' clothes based
+# on the avatar's max amount of clothes. I removed the 'girl' closets and kept
+# just the 'boy' ones.
 ClosetToClothes = {500: 10,
  502: 15,
  504: 20,
  506: 25,
- 508: 50,
- 510: 10,
- 512: 15,
- 514: 20,
- 516: 25,
- 518: 50}
+ 508: 50}
 ClothesToCloset = {}
 for closetId, maxClothes in list(ClosetToClothes.items()):
-    if maxClothes not in ClothesToCloset:
-        ClothesToCloset[maxClothes] = (closetId,)
-    else:
-        ClothesToCloset[maxClothes] += (closetId,)
+    ClothesToCloset[maxClothes] = closetId
 
-MaxClosetIds = (508, 518)
-MaxTrunkIds = (4000, 4010)
+MaxClosetId = 508
+MaxTrunkId = 4000
 FurnitureTypes = {100: ('phase_5.5/models/estate/chairA',
        None,
        None,
@@ -937,13 +933,6 @@ class CatalogFurnitureItem(CatalogAtticItem.CatalogAtticItem):
         return None
 
     def notOfferedTo(self, avatar):
-        if self.getFlags() & FLCloset or self.getFlags() & FLTrunk:
-            decade = self.furnitureType - self.furnitureType % 10
-            forBoys = (decade == 500 or decade == 4000)
-            if avatar.getStyle().getGender() == 'm':
-                return not forBoys
-            else:
-                return forBoys
         return 0
 
     def isDeletable(self):
@@ -1116,23 +1105,16 @@ class CatalogFurnitureItem(CatalogAtticItem.CatalogAtticItem):
 
 
 def nextAvailableCloset(avatar, duplicateItems):
-    if avatar.getStyle().getGender() == 'm':
-        index = 0
-    else:
-        index = 1
     if not hasattr(avatar, 'maxClothes'):
         return None
-    closetIds = ClothesToCloset.get(avatar.getMaxClothes())
-    closetIds = list(closetIds)
-    closetIds.sort()
-    closetId = closetIds[index]
-    if closetId == None or closetId == MaxClosetIds[index]:
+    closetId = ClothesToCloset.get(avatar.getMaxClothes())
+    if closetId == None or closetId == MaxClosetId:
         return
     closetId += 2
     item = CatalogFurnitureItem(closetId)
     while item in avatar.onOrder or item in avatar.mailboxContents:
         closetId += 2
-        if closetId > MaxClosetIds[index]:
+        if closetId > MaxClosetId:
             return
         item = CatalogFurnitureItem(closetId)
 
@@ -1140,12 +1122,7 @@ def nextAvailableCloset(avatar, duplicateItems):
 
 
 def get50ItemCloset(avatar, duplicateItems):
-    if avatar.getStyle().getGender() == 'm':
-        index = 0
-    else:
-        index = 1
-    closetId = MaxClosetIds[index]
-    item = CatalogFurnitureItem(closetId)
+    item = CatalogFurnitureItem(MaxClosetId)
     if item in avatar.onOrder or item in avatar.mailboxContents:
         return None
     return item
@@ -1168,23 +1145,14 @@ def getAllClosets():
 
 
 def get50ItemTrunk(avatar, duplicateItems):
-    if avatar.getStyle().getGender() == 'm':
-        index = 0
-    else:
-        index = 1
-    trunkId = MaxTrunkIds[index]
-    item = CatalogFurnitureItem(trunkId)
+    item = CatalogFurnitureItem(MaxTrunkId)
     if item in avatar.onOrder or item in avatar.mailboxContents:
         return None
     return item
 
 
 def getMaxTrunks():
-    maxTrunks = []
-    for trunkId in MaxTrunkIds:
-        maxTrunks.append(CatalogFurnitureItem(trunkId))
-
-    return maxTrunks
+    return [CatalogFurnitureItem(MaxTrunkId)]
 
 
 def getAllFurnitures(index):

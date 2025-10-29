@@ -25,26 +25,18 @@ class BodyShop(StateData.StateData):
         base.disableMouse()
         self.toon = toon
         self.dna = self.toon.getStyle()
-        gender = self.toon.style.getGender()
         self.speciesStart = self.getSpeciesStart()
         self.speciesChoice = self.speciesStart
         self.headStart = 0
         self.headChoice = ToonDNA.toonHeadTypes.index(self.dna.head) - ToonDNA.getHeadStartIndex(self.species)
         self.torsoStart = 0
-        self.torsoChoice = ToonDNA.toonTorsoTypes.index(self.dna.torso) % 3
+        self.torsoChoice = ToonDNA.toonTorsoTypes.index(self.dna.torso) % 6
         self.legStart = 0
         self.legChoice = ToonDNA.toonLegTypes.index(self.dna.legs)
-        if CLOTHESSHOP in shopsVisited:
-            self.clothesPicked = 1
-        else:
-            self.clothesPicked = 0
-        self.clothesPicked = 1
-        if gender == 'm' or ToonDNA.GirlBottoms[self.dna.botTex][1] == ToonDNA.SHORTS:
-            torsoStyle = 's'
-            torsoPool = ToonDNA.toonTorsoTypes[:3]
-        else:
-            torsoStyle = 'd'
+        if ToonDNA.Bottoms[self.dna.botTex][1] == ToonDNA.SKIRT:
             torsoPool = ToonDNA.toonTorsoTypes[3:6]
+        else:
+            torsoPool = ToonDNA.toonTorsoTypes[:6]
         self.__swapSpecies(0)
         self.__swapHead(0)
         self.__swapTorso(0)
@@ -179,60 +171,15 @@ class BodyShop(StateData.StateData):
         self.ignore('MAT-newToonCreated')
 
     def __swapTorso(self, offset):
-        gender = self.toon.style.getGender()
-        if not self.clothesPicked:
-            length = len(ToonDNA.toonTorsoTypes[6:])
-            torsoOffset = 6
-        elif gender == 'm':
-            length = len(ToonDNA.toonTorsoTypes[:3])
+        if self.toon.style.getClothes() == 'shorts':
+            # length = len(ToonDNA.toonTorsoTypes[:3])
+            # ??? Just write the actual length
+            length = 3
             torsoOffset = 0
-            if self.dna.armColor not in ToonDNA.defaultBoyColorList:
-                self.dna.armColor = ToonDNA.defaultBoyColorList[0]
-            if self.dna.legColor not in ToonDNA.defaultBoyColorList:
-                self.dna.legColor = ToonDNA.defaultBoyColorList[0]
-            if self.dna.headColor not in ToonDNA.defaultBoyColorList:
-                self.dna.headColor = ToonDNA.defaultBoyColorList[0]
-            if self.toon.style.topTex not in ToonDNA.MakeAToonBoyShirts:
-                randomShirt = ToonDNA.getRandomTop(gender, ToonDNA.MAKE_A_TOON)
-                shirtTex, shirtColor, sleeveTex, sleeveColor = randomShirt
-                self.toon.style.topTex = shirtTex
-                self.toon.style.topTexColor = shirtColor
-                self.toon.style.sleeveTex = sleeveTex
-                self.toon.style.sleeveTexColor = sleeveColor
-            if self.toon.style.botTex not in ToonDNA.MakeAToonBoyBottoms:
-                botTex, botTexColor = ToonDNA.getRandomBottom(gender, ToonDNA.MAKE_A_TOON)
-                self.toon.style.botTex = botTex
-                self.toon.style.botTexColor = botTexColor
         else:
-            length = len(ToonDNA.toonTorsoTypes[3:6])
-            if self.toon.style.torso[1] == 'd':
-                torsoOffset = 3
-            else:
-                torsoOffset = 0
-            if self.dna.armColor not in ToonDNA.defaultGirlColorList:
-                self.dna.armColor = ToonDNA.defaultGirlColorList[0]
-            if self.dna.legColor not in ToonDNA.defaultGirlColorList:
-                self.dna.legColor = ToonDNA.defaultGirlColorList[0]
-            if self.dna.headColor not in ToonDNA.defaultGirlColorList:
-                self.dna.headColor = ToonDNA.defaultGirlColorList[0]
-            if self.toon.style.topTex not in ToonDNA.MakeAToonGirlShirts:
-                randomShirt = ToonDNA.getRandomTop(gender, ToonDNA.MAKE_A_TOON)
-                shirtTex, shirtColor, sleeveTex, sleeveColor = randomShirt
-                self.toon.style.topTex = shirtTex
-                self.toon.style.topTexColor = shirtColor
-                self.toon.style.sleeveTex = sleeveTex
-                self.toon.style.sleeveTexColor = sleeveColor
-            if self.toon.style.botTex not in ToonDNA.MakeAToonGirlBottoms:
-                if self.toon.style.torso[1] == 'd':
-                    botTex, botTexColor = ToonDNA.getRandomBottom(gender, ToonDNA.MAKE_A_TOON, girlBottomType=ToonDNA.SKIRT)
-                    self.toon.style.botTex = botTex
-                    self.toon.style.botTexColor = botTexColor
-                    torsoOffset = 3
-                else:
-                    botTex, botTexColor = ToonDNA.getRandomBottom(gender, ToonDNA.MAKE_A_TOON, girlBottomType=ToonDNA.SHORTS)
-                    self.toon.style.botTex = botTex
-                    self.toon.style.botTexColor = botTexColor
-                    torsoOffset = 0
+            # length = len(ToonDNA.toonTorsoTypes[3:6])
+            length = 3
+            torsoOffset = 3
         self.torsoChoice = (self.torsoChoice + offset) % length
         self.__updateScrollButtons(self.torsoChoice, length, self.torsoStart, self.torsoLButton, self.torsoRButton)
         torso = ToonDNA.toonTorsoTypes[torsoOffset + self.torsoChoice]
