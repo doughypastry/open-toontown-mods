@@ -18,6 +18,7 @@ class BodyShop(StateData.StateData):
         self.torsoChoice = 0
         self.legChoice = 0
         self.headChoice = 0
+        self.eyelashesChoice = 0
         self.speciesChoice = 0
         return
 
@@ -29,6 +30,7 @@ class BodyShop(StateData.StateData):
         self.speciesChoice = self.speciesStart
         self.headStart = 0
         self.headChoice = ToonDNA.toonHeadTypes.index(self.dna.head) - ToonDNA.getHeadStartIndex(self.species)
+        self.eyelashesChoice = ToonDNA.toonEyelashTypes.index(self.dna.eyelashes)
         self.torsoStart = 0
         self.torsoChoice = ToonDNA.toonTorsoTypes.index(self.dna.torso) % 6
         self.legStart = 0
@@ -41,7 +43,8 @@ class BodyShop(StateData.StateData):
         self.__swapHead(0)
         self.__swapTorso(0)
         self.__swapLegs(0)
-        choicePool = [ToonDNA.toonHeadTypes, torsoPool, ToonDNA.toonLegTypes]
+        self.__swapEyelashes(0)
+        choicePool = [ToonDNA.toonHeadTypes, torsoPool, ToonDNA.toonLegTypes, ToonDNA.toonEyelashTypes]
         self.shuffleButton.setChoicePool(choicePool)
         self.accept(self.shuffleFetchMsg, self.changeBody)
         self.acceptOnce('last', self.__handleBackward)
@@ -88,7 +91,7 @@ class BodyShop(StateData.StateData):
         self.upsellModel = loader.loadModel('phase_3/models/gui/tt_m_gui_ups_mainGui')
         upsellTex = self.upsellModel.find('**/tt_t_gui_ups_banner')
         self.parentFrame = DirectFrame(relief=DGG.RAISED, pos=(0.98, 0, 0.416), frameColor=(1, 0, 0, 0))
-        self.speciesFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.073), hpr=(0, 0, 0), scale=1.3, frameColor=(1, 1, 1, 1), text='Species', text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
+        self.speciesFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, 0.173), hpr=(0, 0, 0), scale=1.3, frameColor=(1, 1, 1, 1), text='Species', text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.speciesLButton = DirectButton(parent=self.speciesFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,
          shuffleArrowRollover,
@@ -97,7 +100,7 @@ class BodyShop(StateData.StateData):
          shuffleArrowDown,
          shuffleArrowRollover,
          shuffleArrowDisabled), image_scale=halfButtonInvertScale, image1_scale=halfButtonInvertHoverScale, image2_scale=halfButtonInvertHoverScale, pos=(0.2, 0, 0), command=self.__swapSpecies, extraArgs=[1])
-        self.headFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.3), hpr=(0, 0, 2), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopHead, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
+        self.headFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.1), hpr=(0, 0, 2), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopHead, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.headLButton = DirectButton(parent=self.headFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,
          shuffleArrowRollover,
@@ -106,7 +109,7 @@ class BodyShop(StateData.StateData):
          shuffleArrowDown,
          shuffleArrowRollover,
          shuffleArrowDisabled), image_scale=halfButtonInvertScale, image1_scale=halfButtonInvertHoverScale, image2_scale=halfButtonInvertHoverScale, pos=(0.2, 0, 0), command=self.__swapHead, extraArgs=[1])
-        self.bodyFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonScale, relief=None, pos=(0, 0, -0.5), hpr=(0, 0, -2), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopBody, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
+        self.bodyFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonScale, relief=None, pos=(0, 0, -0.3), hpr=(0, 0, -2), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopBody, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.torsoLButton = DirectButton(parent=self.bodyFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,
          shuffleArrowRollover,
@@ -115,7 +118,7 @@ class BodyShop(StateData.StateData):
          shuffleArrowDown,
          shuffleArrowRollover,
          shuffleArrowDisabled), image_scale=halfButtonInvertScale, image1_scale=halfButtonInvertHoverScale, image2_scale=halfButtonInvertHoverScale, pos=(0.2, 0, 0), command=self.__swapTorso, extraArgs=[1])
-        self.legsFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.7), hpr=(0, 0, 3), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopLegs, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
+        self.legsFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.5), hpr=(0, 0, 3), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopLegs, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.legLButton = DirectButton(parent=self.legsFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,
          shuffleArrowRollover,
@@ -124,6 +127,15 @@ class BodyShop(StateData.StateData):
          shuffleArrowDown,
          shuffleArrowRollover,
          shuffleArrowDisabled), image_scale=halfButtonInvertScale, image1_scale=halfButtonInvertHoverScale, image2_scale=halfButtonInvertHoverScale, pos=(0.2, 0, 0), command=self.__swapLegs, extraArgs=[1])
+        self.eyelashesFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonScale, relief=None, pos=(0, 0, -0.7), hpr=(0, 0, -2), scale=0.9, frameColor=(1, 1, 1, 1), text=TTLocalizer.BodyShopEyelashes, text_scale=0.0625, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
+        self.eyelashesLButton = DirectButton(parent=self.eyelashesFrame, relief=None, image=(shuffleArrowUp,
+         shuffleArrowDown,
+         shuffleArrowRollover,
+         shuffleArrowDisabled), image_scale=halfButtonScale, image1_scale=halfButtonHoverScale, image2_scale=halfButtonHoverScale, pos=(-0.2, 0, 0), command=self.__swapEyelashes, extraArgs=[-1])
+        self.eyelashesRButton = DirectButton(parent=self.eyelashesFrame, relief=None, image=(shuffleArrowUp,
+         shuffleArrowDown,
+         shuffleArrowRollover,
+         shuffleArrowDisabled), image_scale=halfButtonInvertScale, image1_scale=halfButtonInvertHoverScale, image2_scale=halfButtonInvertHoverScale, pos=(0.2, 0, 0), command=self.__swapEyelashes, extraArgs=[1])
         self.memberButton = DirectButton(relief=None, image=(upsellTex,
          upsellTex,
          upsellTex,
@@ -144,6 +156,7 @@ class BodyShop(StateData.StateData):
         self.headFrame.destroy()
         self.bodyFrame.destroy()
         self.legsFrame.destroy()
+        self.eyelashesFrame.destroy()
         self.speciesLButton.destroy()
         self.speciesRButton.destroy()
         self.headLButton.destroy()
@@ -152,6 +165,8 @@ class BodyShop(StateData.StateData):
         self.torsoRButton.destroy()
         self.legLButton.destroy()
         self.legRButton.destroy()
+        self.eyelashesLButton.destroy()
+        self.eyelashesRButton.destroy()
         self.memberButton.destroy()
         del self.parentFrame
         del self.speciesFrame
@@ -198,6 +213,18 @@ class BodyShop(StateData.StateData):
         self.toon.swapToonLegs(newLeg)
         self.toon.loop('neutral', 0)
         self.toon.swapToonColor(self.dna)
+
+    def __swapEyelashes(self, offset):
+        length = len(ToonDNA.toonEyelashTypes)
+        self.eyelashesChoice = (self.eyelashesChoice + offset) % length
+        self.notify.debug('self.eyelashesChoice=%d, length=%d' % (self.eyelashesChoice, length))
+        self.__updateScrollButtons(self.eyelashesChoice, length, 0, self.eyelashesLButton, self.eyelashesRButton)
+        newEyelashes = ToonDNA.toonEyelashTypes[self.eyelashesChoice]
+        self.dna.eyelashes = newEyelashes
+        self.toon.setupEyelashes(self.dna)
+        # This fixes both open and closed eyelash textures being visible.
+        self.toon.eyelids.request('closed')
+        self.toon.eyelids.request('open')
 
     def __swapHead(self, offset):
         self.headList = ToonDNA.getHeadList(self.species)
@@ -277,18 +304,21 @@ class BodyShop(StateData.StateData):
         newHeadIndex = ToonDNA.toonHeadTypes.index(newHead) - ToonDNA.getHeadStartIndex(ToonDNA.getSpecies(newHead))
         newTorsoIndex = ToonDNA.toonTorsoTypes.index(newChoice[1])
         newLegsIndex = ToonDNA.toonLegTypes.index(newChoice[2])
+        newEyelashesIndex = ToonDNA.toonEyelashTypes.index(newChoice[3])
         oldHead = self.toon.style.head
         oldSpeciesIndex = ToonDNA.toonSpeciesTypes.index(ToonDNA.getSpecies(oldHead))
         oldHeadIndex = ToonDNA.toonHeadTypes.index(oldHead) - ToonDNA.getHeadStartIndex(ToonDNA.getSpecies(oldHead))
         oldTorsoIndex = ToonDNA.toonTorsoTypes.index(self.toon.style.torso)
         oldLegsIndex = ToonDNA.toonLegTypes.index(self.toon.style.legs)
+        oldEyelashesIndex = ToonDNA.toonEyelashTypes.index(self.toon.style.eyelashes)
         self.__swapSpecies(newSpeciesIndex - oldSpeciesIndex)
         self.__swapHead(newHeadIndex - oldHeadIndex)
         self.__swapTorso(newTorsoIndex - oldTorsoIndex)
         self.__swapLegs(newLegsIndex - oldLegsIndex)
+        self.__swapEyelashes(newEyelashesIndex - oldEyelashesIndex)
 
     def getCurrToonSetting(self):
-        return [self.toon.style.head, self.toon.style.torso, self.toon.style.legs]
+        return [self.toon.style.head, self.toon.style.torso, self.toon.style.legs, self.toon.style.eyelashes]
 
     def __changeSpeciesName(self, species):
         if species == 'd':

@@ -175,6 +175,7 @@ toonTorsoTypes = ['ss',
  'm',
  'l']
 toonLegTypes = ['s', 'm', 'l']
+toonEyelashTypes = [0, 1]
 Shirts = ['phase_3/maps/desat_shirt_1.png',
  'phase_3/maps/desat_shirt_2.png',
  'phase_3/maps/desat_shirt_3.png',
@@ -2743,9 +2744,6 @@ class ToonDNA(AvatarDNA.AvatarDNA):
             return 'short'
         else:
             notify.error('unknown leg size: ', self.legs)
-
-    def getEyelashes(self):
-        return self.eyelashes
 
     def getClothes(self):
         if len(self.torso) == 1:
