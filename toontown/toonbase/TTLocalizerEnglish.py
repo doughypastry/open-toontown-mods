@@ -5914,11 +5914,11 @@ AwardManagerAccessoryNames = {}
 AccessoryTypeNames = {}
 for accessoryId in list(CatalogAccessoryItemGlobals.AccessoryTypes.keys()):
     accessoryInfo = CatalogAccessoryItemGlobals.AccessoryTypes[accessoryId]
-    if accessoryInfo[0] % 4 == 0:
+    if accessoryInfo[0] == CatalogAccessoryItemGlobals.AHat:
         accessoryStyleDescription = HatStylesDescriptions
-    elif accessoryInfo[0] % 4 == 1:
+    elif accessoryInfo[0] == CatalogAccessoryItemGlobals.AGlasses:
         accessoryStyleDescription = GlassesStylesDescriptions
-    elif accessoryInfo[0] % 4 == 2:
+    elif accessoryInfo[0] == CatalogAccessoryItemGlobals.ABackpack:
         accessoryStyleDescription = BackpackStylesDescriptions
     else:
         accessoryStyleDescription = ShoesStylesDescriptions
