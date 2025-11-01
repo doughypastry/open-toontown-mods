@@ -13,9 +13,17 @@ class MakeClothesGUI(ClothesGUI.ClothesGUI):
         if gender != self.gender:
             self.tops = ToonDNA.getRandomizedTops(gender, tailorId=ToonDNA.MAKE_A_TOON)
             self.bottoms = ToonDNA.getRandomizedBottoms(gender, tailorId=ToonDNA.MAKE_A_TOON)
+            self.hats = ToonDNA.getRandomizedHats(gender, tailorId=ToonDNA.MAKE_A_TOON)
+            self.glasses = [(0, 0, 0)]
+            self.backpacks = [(0, 0, 0)]
+            self.shoes = ToonDNA.getRandomizedShoes(gender, tailorId=ToonDNA.MAKE_A_TOON)
             self.gender = gender
             self.topChoice = 0
             self.bottomChoice = 0
+            self.hatChoice = 0
+            self.glassesChoice = 0
+            self.backpackChoice = 0
+            self.shoesChoice = 0
         self.setupButtons()
 
     def setupButtons(self):

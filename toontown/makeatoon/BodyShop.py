@@ -237,7 +237,7 @@ class BodyShop(StateData.StateData):
         self.__updateScrollButtons(self.torsoChoice, length, self.torsoStart, self.torsoLButton, self.torsoRButton)
         torso = ToonDNA.toonTorsoTypes[torsoOffset + self.torsoChoice]
         self.dna.torso = torso
-        self.toon.swapToonTorso(torso)
+        self.toon.swapToonTorso(torso) # Already generates the backpack
         self.toon.loop('neutral', 0)
         self.toon.swapToonColor(self.dna)
 
@@ -249,6 +249,7 @@ class BodyShop(StateData.StateData):
         newLeg = ToonDNA.toonLegTypes[self.legChoice]
         self.dna.legs = newLeg
         self.toon.swapToonLegs(newLeg)
+        self.toon.generateShoes()
         self.toon.loop('neutral', 0)
         self.toon.swapToonColor(self.dna)
 
@@ -278,6 +279,8 @@ class BodyShop(StateData.StateData):
         self.toon.swapToonHead(newHead)
         self.toon.loop('neutral', 0)
         self.toon.swapToonColor(self.dna)
+        self.toon.generateHat()
+        self.toon.generateGlasses()
         self.restrictHeadType(newHead)
 
     def __updateScrollButtons(self, choice, length, start, lButton, rButton):

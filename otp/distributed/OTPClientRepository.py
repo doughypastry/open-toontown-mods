@@ -38,6 +38,7 @@ from otp.uberdog import OtpAvatarManager
 from otp.distributed import OtpDoGlobals
 from otp.distributed.TelemetryLimiter import TelemetryLimiter
 from otp.ai.GarbageLeakServerEventAggregator import GarbageLeakServerEventAggregator
+from toontown.toon import Toon
 from .PotentialAvatar import PotentialAvatar
 from enum import IntEnum
 
@@ -958,8 +959,9 @@ class OTPClientRepository(ClientRepositoryBase):
                 avNames[3] = di.getString()
                 avDNA = di.getBlob()
                 avPosition = di.getUint8()
+                avAccessories = di.getBlob()
                 aname = di.getUint8()
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
+                potAv = PotentialAvatar(avNum, avNames, avDNA, avAccessories, avPosition, aname)
                 avList.append(potAv)
 
             self.avList = avList
@@ -998,7 +1000,7 @@ class OTPClientRepository(ClientRepositoryBase):
         @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
         def handleAvatarListResponse(self, avatarList):
             avList = []
-            for avNum, avName, avDNA, avPosition, nameState in avatarList:
+            for avNum, avName, avDNA, avAccessories, avPosition, nameState in avatarList:
                 avNames = ['',
                  '',
                  '',
@@ -1012,7 +1014,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     avNames[3] = avName
 
                 aname = int(nameState == 1)
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
+                potAv = PotentialAvatar(avNum, avNames, avDNA, avAccessories, avPosition, aname)
                 avList.append(potAv)
 
             self.avList = avList
@@ -1035,14 +1037,15 @@ class OTPClientRepository(ClientRepositoryBase):
         pass
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendCreateAvatarMsg(self, avDNA, avName, avPosition):
+    def sendCreateAvatarMsg(self, avDNA, avAccessories, avName, avPosition):
         if __astron__:
-            self.astronLoginManager.sendCreateAvatar(avDNA, avName, avPosition)
+            self.astronLoginManager.sendCreateAvatar(avDNA, avAccessories, avName, avPosition)
         else:
             datagram = PyDatagram()
             datagram.addUint16(CLIENT_CREATE_AVATAR)
             datagram.addUint16(0)
             datagram.addBlob(avDNA.makeNetString())
+            datagram.addBlob(Toon.makeAccessoryNetString(*avAccessories))
             datagram.addUint8(avPosition)
             self.newName = avName
             self.newDNA = avDNA

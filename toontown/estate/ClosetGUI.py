@@ -101,8 +101,17 @@ class ClosetGUI(ClothesGUI.ClothesGUI):
             self.bottoms.append((self.bottomsList[i], self.bottomsList[i + 1]))
             i = i + 2
 
+        self.hats = [(0, 0, 0)]
+        self.glasses = [(0, 0, 0)]
+        self.backpacks = [(0, 0, 0)]
+        self.shoes = [(0, 0, 0)]
+
         self.topChoice = 0
         self.bottomChoice = 0
+        self.hatChoice = 0
+        self.glassesChoice = 0
+        self.backpackChoice = 0
+        self.shoesChoice = 0
         self.swapTop(0)
         self.swapBottom(0)
         if self.isOwner:

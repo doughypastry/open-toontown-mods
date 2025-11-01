@@ -480,6 +480,7 @@ dclass DistributedToon : DistributedPlayer {
   setGlasses(uint8 = 0, uint8 = 0, uint8 = 0) required broadcast db ownrecv;
   setBackpack(uint8 = 0, uint8 = 0, uint8 = 0) required broadcast db ownrecv;
   setShoes(uint8 = 0, uint8 = 0, uint8 = 0) required broadcast db ownrecv;
+  setAccessoriesString(blob) broadcast ownrecv;
   setGardenSpecials(gardenSpecial [] = []) required ownrecv db airecv;
   setEarnedExperience(uint16[]) ownrecv;
   setTunnelIn(int16, int16/10, int16/10, int16/10, int16/100, int32/100) ownsend broadcast;
@@ -1866,8 +1867,8 @@ dclass DistributedNPCClerk : DistributedNPCToonBase {
 
 dclass DistributedNPCTailor : DistributedNPCToonBase {
   setMovie(uint8, uint32, uint32, int16) broadcast ram;
-  setDNA(blob, int8, uint8) airecv clsend;
-  setCustomerDNA(uint32, blob) broadcast ram;
+  setStyleAndAccessories(blob, blob, int8, uint8) airecv clsend;
+  setCustomerStyleAndAccessories(uint32, blob, blob) broadcast ram;
 };
 
 dclass DistributedNPCBlocker : DistributedNPCToonBase {

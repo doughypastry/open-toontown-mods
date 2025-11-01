@@ -19,6 +19,8 @@ from toontown.catalog import CatalogItemList
 from toontown.catalog import CatalogItem
 from direct.showbase import PythonUtil
 from direct.distributed.ClockDelta import *
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from toontown.toonbase.ToontownGlobals import *
 import types
 from toontown.fishing import FishGlobals
@@ -32,6 +34,7 @@ from toontown.chat import ResistanceChat
 from toontown.racing import RaceGlobals
 from toontown.hood import ZoneUtil
 from toontown.toon import NPCToons
+from toontown.toon import Toon
 from toontown.estate import FlowerCollection
 from toontown.estate import FlowerBasket
 from toontown.estate import GardenGlobals
@@ -486,6 +489,23 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning(logStr)
             self.air.writeServerEvent('suspicious', self.doId, logStr)
 
+    def b_setAccessoriesString(self, string):
+        self.d_setAccessoriesString(string)
+        self.setAccessoriesString(string)
+
+    def d_setAccessoriesString(self, string):
+        self.sendUpdate('setAccessoriesString', [string])
+
+    def setAccessoriesString(self, string):
+        if not Toon.isValidAccessoryNetString(string):
+            return
+        dg = PyDatagram(string)
+        dgi = PyDatagramIterator(dg)
+        self.b_setHat(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.b_setGlasses(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.b_setBackpack(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.b_setShoes(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+
     def verifyDNA(self):
         changed = False
         if self.isPlayerControlled():
@@ -509,6 +529,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def getDNAString(self):
         return self.dna.makeNetString()
+
+    def getAccessoryNetString(self):
+        return Toon.makeAccessoryNetString(self.hat, self.glasses, self.backpack, self.shoes)
 
     def getStyle(self):
         return self.dna

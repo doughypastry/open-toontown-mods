@@ -21,6 +21,8 @@ from toontown.battle import SuitBattleGlobals
 from otp.otpbase import OTPGlobals
 from toontown.effects import DustCloud
 from toontown.distributed import DelayDelete
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from . import AccessoryGlobals
 import importlib
 import functools
@@ -456,6 +458,86 @@ def unloadDialog():
     PigDialogueArray = []
 
 
+def makeAccessoryNetString(hat, glasses, backpack, shoes):
+    dg = PyDatagram()
+    dg.addUint8(hat[0])
+    dg.addUint8(hat[1])
+    dg.addUint8(hat[2])
+    dg.addUint8(glasses[0])
+    dg.addUint8(glasses[1])
+    dg.addUint8(glasses[2])
+    dg.addUint8(backpack[0])
+    dg.addUint8(backpack[1])
+    dg.addUint8(backpack[2])
+    dg.addUint8(shoes[0])
+    dg.addUint8(shoes[1])
+    dg.addUint8(shoes[2])
+    return dg.getMessage()
+
+
+def makeAccessoriesFromNetString(string):
+    dg = PyDatagram(string)
+    dgi = PyDatagramIterator(dg)
+    hat = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    glasses = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    backpack = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    shoes = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    return {
+        'hat': hat,
+        'glasses': glasses,
+        'backpack': backpack,
+        'shoes': shoes,
+    }
+
+
+def isValidAccessoryNetString(string):
+    dg = PyDatagram(string)
+    dgi = PyDatagramIterator(dg)
+    if dgi.getRemainingSize() != 12:
+        return False
+
+    hatModelIndex = dgi.getUint8()
+    hatTextureIndex = dgi.getUint8()
+    hatColorIndex = dgi.getUint8()
+    if hatModelIndex >= len(ToonDNA.HatModels):
+        return False
+    if hatModelIndex >= len(ToonDNA.HatTextures):
+        return False
+    if hatColorIndex != 0:
+        return False
+
+    glassesModelIndex = dgi.getUint8()
+    glassesTextureIndex = dgi.getUint8()
+    glassesColorIndex = dgi.getUint8()
+    if glassesModelIndex >= len(ToonDNA.GlassesModels):
+        return False
+    if glassesModelIndex >= len(ToonDNA.GlassesTextures):
+        return False
+    if glassesColorIndex != 0:
+        return False
+
+    backpackModelIndex = dgi.getUint8()
+    backpackTextureIndex = dgi.getUint8()
+    backpackColorIndex = dgi.getUint8()
+    if backpackModelIndex >= len(ToonDNA.BackpackModels):
+        return False
+    if backpackModelIndex >= len(ToonDNA.BackpackTextures):
+        return False
+    if backpackColorIndex != 0:
+        return False
+
+    shoesModelIndex = dgi.getUint8()
+    shoesTextureIndex = dgi.getUint8()
+    shoesColorIndex = dgi.getUint8()
+    if shoesModelIndex >= len(ToonDNA.ShoesModels):
+        return False
+    if shoesModelIndex >= len(ToonDNA.ShoesTextures):
+        return False
+    if shoesColorIndex != 0:
+        return False
+
+    return True
+
 class Toon(Avatar.Avatar, ToonHead):
     notify = DirectNotifyGlobal.directNotify.newCategory('Toon')
     afkTimeout = ConfigVariableInt('afk-timeout', 600).value
@@ -641,6 +723,12 @@ class Toon(Avatar.Avatar, ToonHead):
             self.generateToon()
             self.initializeDropShadow()
             self.initializeNametag3d()
+
+    def setAccessoriesString(self, string):
+        if hasattr(self, 'isDisguised'):
+            if self.isDisguised:
+                return
+        self.setAccessoriesFromNetString(string)
 
     def parentToonParts(self):
         if self.hasLOD():
@@ -1024,90 +1112,14 @@ class Toon(Avatar.Avatar, ToonHead):
         if hat[0] >= len(ToonDNA.HatModels):
             self.sendLogSuspiciousEvent('tried to put a wrong hat idx %d' % hat[0])
             return
-        if len(self.hatNodes) > 0:
-            for hatNode in self.hatNodes:
-                hatNode.removeNode()
-
-            self.hatNodes = []
-        self.showEars()
-        if hat[0] != 0:
-            hatGeom = loader.loadModel(ToonDNA.HatModels[hat[0]], okMissing=True)
-            if hatGeom:
-                if hat[0] == 54:
-                    self.hideEars()
-                if hat[1] != 0:
-                    texName = ToonDNA.HatTextures[hat[1]]
-                    tex = loader.loadTexture(texName, okMissing=True)
-                    if tex is None:
-                        self.sendLogSuspiciousEvent('failed to load texture %s' % texName)
-                    else:
-                        tex.setMinfilter(Texture.FTLinearMipmapLinear)
-                        tex.setMagfilter(Texture.FTLinear)
-                        hatGeom.setTexture(tex, 1)
-                if fromRTM:
-                    importlib.reload(AccessoryGlobals)
-                transOffset = None
-                if AccessoryGlobals.ExtendedHatTransTable.get(hat[0]):
-                    transOffset = AccessoryGlobals.ExtendedHatTransTable[hat[0]].get(self.style.head[:2])
-                if transOffset is None:
-                    transOffset = AccessoryGlobals.HatTransTable.get(self.style.head[:2])
-                    if transOffset is None:
-                        return
-                hatGeom.setPos(transOffset[0][0], transOffset[0][1], transOffset[0][2])
-                hatGeom.setHpr(transOffset[1][0], transOffset[1][1], transOffset[1][2])
-                hatGeom.setScale(transOffset[2][0], transOffset[2][1], transOffset[2][2])
-                headNodes = self.findAllMatches('**/__Actor_head')
-                for headNode in headNodes:
-                    hatNode = headNode.attachNewNode('hatNode')
-                    self.hatNodes.append(hatNode)
-                    hatGeom.instanceTo(hatNode)
-
-        return
+        ToonHead.generateHat(self, self.style, hat, fromRTM=fromRTM)
 
     def generateGlasses(self, fromRTM = False):
         glasses = self.getGlasses()
         if glasses[0] >= len(ToonDNA.GlassesModels):
             self.sendLogSuspiciousEvent('tried to put a wrong glasses idx %d' % glasses[0])
             return
-        if len(self.glassesNodes) > 0:
-            for glassesNode in self.glassesNodes:
-                glassesNode.removeNode()
-
-            self.glassesNodes = []
-        self.showEyelashes()
-        if glasses[0] != 0:
-            glassesGeom = loader.loadModel(ToonDNA.GlassesModels[glasses[0]], okMissing=True)
-            if glassesGeom:
-                if glasses[0] in [15, 16]:
-                    self.hideEyelashes()
-                if glasses[1] != 0:
-                    texName = ToonDNA.GlassesTextures[glasses[1]]
-                    tex = loader.loadTexture(texName, okMissing=True)
-                    if tex is None:
-                        self.sendLogSuspiciousEvent('failed to load texture %s' % texName)
-                    else:
-                        tex.setMinfilter(Texture.FTLinearMipmapLinear)
-                        tex.setMagfilter(Texture.FTLinear)
-                        glassesGeom.setTexture(tex, 1)
-                if fromRTM:
-                    importlib.reload(AccessoryGlobals)
-                transOffset = None
-                if AccessoryGlobals.ExtendedGlassesTransTable.get(glasses[0]):
-                    transOffset = AccessoryGlobals.ExtendedGlassesTransTable[glasses[0]].get(self.style.head[:2])
-                if transOffset is None:
-                    transOffset = AccessoryGlobals.GlassesTransTable.get(self.style.head[:2])
-                    if transOffset is None:
-                        return
-                glassesGeom.setPos(transOffset[0][0], transOffset[0][1], transOffset[0][2])
-                glassesGeom.setHpr(transOffset[1][0], transOffset[1][1], transOffset[1][2])
-                glassesGeom.setScale(transOffset[2][0], transOffset[2][1], transOffset[2][2])
-                headNodes = self.findAllMatches('**/__Actor_head')
-                for headNode in headNodes:
-                    glassesNode = headNode.attachNewNode('glassesNode')
-                    self.glassesNodes.append(glassesNode)
-                    glassesGeom.instanceTo(glassesNode)
-
-        return
+        ToonHead.generateGlasses(self, self.style, glasses, fromRTM=fromRTM)
 
     def generateBackpack(self, fromRTM = False):
         backpack = self.getBackpack()
@@ -1212,6 +1224,17 @@ class Toon(Avatar.Avatar, ToonHead):
 
     def getShoes(self):
         return self.shoes
+
+    def getAccessoryNetString(self):
+        return makeAccessoryNetString(self.hat, self.glasses, self.backpack, self.shoes)
+
+    def setAccessoriesFromNetString(self, string):
+        dg = PyDatagram(string)
+        dgi = PyDatagramIterator(dg)
+        self.setHat(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setGlasses(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setBackpack(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setShoes(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
 
     def getDialogueArray(self):
         animalType = self.style.getType()

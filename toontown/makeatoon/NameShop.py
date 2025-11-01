@@ -22,6 +22,7 @@ from toontown.toontowngui import TeaserPanel
 from direct.distributed.PyDatagram import PyDatagram
 from direct.showbase import PythonUtil
 from toontown.toon import NPCToons
+from toontown.toon import Toon
 from direct.task import Task
 from toontown.makeatoon.TTPickANamePattern import TTPickANamePattern
 from panda3d.core import TextEncoder
@@ -899,8 +900,9 @@ class NameShop(StateData.StateData):
             if returnCode == 0:
                 style = self.toon.getStyle()
                 avDNA = style.makeNetString()
+                avAccessories = self.getAccessoryData()
                 self.notify.debug('pattern name accepted')
-                newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 0)
+                newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 0)
                 self.avList.append(newPotAv)
                 self.doneStatus = 'done'
                 self.storeSkipTutorialRequest()
@@ -919,8 +921,9 @@ class NameShop(StateData.StateData):
             if returnCode == 1:
                 style = self.toon.getStyle()
                 avDNA = style.makeNetString()
+                avAccessories = self.getAccessoryData()
                 self.notify.debug('pattern name accepted')
-                newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 0)
+                newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 0)
                 self.avList.append(newPotAv)
                 self.doneStatus = 'done'
                 self.storeSkipTutorialRequest()
@@ -1003,17 +1006,19 @@ class NameShop(StateData.StateData):
                 if approvedname != '':
                     style = self.toon.getStyle()
                     avDNA = style.makeNetString()
+                    avAccessories = self.getAccessoryData()
                     self.names[0] = self.nameEntry.get()
                     self.notify.debug('typed name accepted')
-                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 0)
+                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 0)
                     self.avList.append(newPotAv)
                     self.fsm.request('Accepted')
                 elif wishname != '':
                     style = self.toon.getStyle()
                     avDNA = style.makeNetString()
+                    avAccessories = self.getAccessoryData()
                     self.names[1] = self.nameEntry.get()
                     self.notify.debug('typed name needs approval')
-                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 1)
+                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 1)
                     if not self.newwarp:
                         self.avList.append(newPotAv)
                     self.fsm.request('ApprovalAccepted')
@@ -1052,17 +1057,19 @@ class NameShop(StateData.StateData):
                 if returnCode == 2:
                     style = self.toon.getStyle()
                     avDNA = style.makeNetString()
+                    avAccessories = self.getAccessoryData()
                     self.names[0] = self.nameEntry.get()
                     self.notify.debug('typed name accepted')
-                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 0)
+                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 0)
                     self.avList.append(newPotAv)
                     self.fsm.request('Accepted')
                 elif returnCode == 1:
                     style = self.toon.getStyle()
                     avDNA = style.makeNetString()
+                    avAccessories = self.getAccessoryData()
                     self.names[1] = self.nameEntry.get()
                     self.notify.debug('typed name needs approval')
-                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, self.index, 1)
+                    newPotAv = PotentialAvatar.PotentialAvatar(newavId, self.names, avDNA, avAccessories, self.index, 1)
                     if not self.newwarp:
                         self.avList.append(newPotAv)
                     self.fsm.request('ApprovalAccepted')
@@ -1072,22 +1079,28 @@ class NameShop(StateData.StateData):
                     self.notify.debug("name typed accepted but didn't fill any return fields")
                     self.rejectName(TTLocalizer.NameError)
 
+    # TODO: It's weird that this avatar creation code is in NameShop.
     def serverCreateAvatar(self, skipTutorial = False):
         self.notify.debug('serverCreateAvatar')
         style = self.toon.getStyle()
         self.newDNA = style.makeNetString()
+        self.newAccessories = self.getAccessoryData()
         if skipTutorial:
             self.requestingSkipTutorial = True
         else:
             self.requestingSkipTutorial = False
         if not self.avExists or self.avExists and self.avId == 'deleteMe':
-            messenger.send('nameShopCreateAvatar', [style, '', self.index])
+            accessories = [self.toon.hat, self.toon.glasses, self.toon.backpack, self.toon.shoes]
+            messenger.send('nameShopCreateAvatar', [style, accessories, '', self.index])
             if __astron__:
                 self.accept('nameShopCreateAvatarDone', self.handleCreateAvatarResponseMsg)
         else:
             self.checkNameTyped()
         self.notify.debug('Ending Make A Toon: %s' % self.toon.style)
         base.cr.centralLogger.writeClientEvent('MAT - endingMakeAToon: %s' % self.toon.style)
+
+    def getAccessoryData(self):
+        return Toon.makeAccessoryNetString(self.toon.hat, self.toon.glasses, self.toon.backpack, self.toon.shoes)
 
     if not __astron__:
         def handleCreateAvatarResponseMsg(self, di):
@@ -1101,7 +1114,7 @@ class NameShop(StateData.StateData):
                 self.logAvatarCreation()
                 if self.nameAction == 0:
                     self.toon.setName(self.names[0])
-                    newPotAv = PotentialAvatar.PotentialAvatar(self.avId, self.names, self.newDNA, self.index, 1)
+                    newPotAv = PotentialAvatar.PotentialAvatar(self.avId, self.names, self.newDNA, self.newAccessories, self.index, 1)
                     self.avList.append(newPotAv)
                     self.doneStatus = 'done'
                     self.storeSkipTutorialRequest()
@@ -1126,7 +1139,7 @@ class NameShop(StateData.StateData):
             self.logAvatarCreation()
             if self.nameAction == 0:
                 self.toon.setName(self.names[0])
-                newPotAv = PotentialAvatar.PotentialAvatar(self.avId, self.names, self.newDNA, self.index, 1)
+                newPotAv = PotentialAvatar.PotentialAvatar(self.avId, self.names, self.newDNA, self.newAccessories, self.index, 1)
                 self.avList.append(newPotAv)
                 self.doneStatus = 'done'
                 self.storeSkipTutorialRequest()

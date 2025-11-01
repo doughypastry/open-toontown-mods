@@ -518,6 +518,7 @@ struct PotentialAvatar {
   uint32 avNum;
   string avName;
   blob avDNA;
+  blob avAccessories;
   uint8 avPosition;
   uint8 nameState;
 };
@@ -527,7 +528,7 @@ dclass AstronLoginManager : DistributedObject {
   loginResponse(blob);
   requestAvatarList() clsend;
   avatarListResponse(PotentialAvatar[]);
-  createAvatar(blob, uint8) clsend;
+  createAvatar(blob, blob, uint8) clsend;
   createAvatarResponse(uint32);
   setNamePattern(uint32, int16, uint8, int16, uint8, int16, uint8, int16, uint8) clsend;
   namePatternAnswer(uint32, uint8);

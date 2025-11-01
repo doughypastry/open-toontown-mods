@@ -1,5 +1,6 @@
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
+from toontown.toon import Toon
 
 
 class AstronLoginManager(DistributedObjectGlobal):
@@ -25,9 +26,9 @@ class AstronLoginManager(DistributedObjectGlobal):
     def avatarListResponse(self, avatarList):
         self.cr.handleAvatarListResponse(avatarList)
 
-    def sendCreateAvatar(self, avDNA, avName, avPosition):
+    def sendCreateAvatar(self, avDNA, avAccessories, avName, avPosition):
         # avName isn't used. Sad!
-        self.sendUpdate('createAvatar', [avDNA.makeNetString(), avPosition])
+        self.sendUpdate('createAvatar', [avDNA.makeNetString(), Toon.makeAccessoryNetString(*avAccessories), avPosition])
 
     def createAvatarResponse(self, avId):
         messenger.send('nameShopCreateAvatarDone', [avId])

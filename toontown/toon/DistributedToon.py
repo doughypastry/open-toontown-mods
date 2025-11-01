@@ -263,6 +263,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def setDNAString(self, dnaString):
         Toon.Toon.setDNAString(self, dnaString)
 
+    def setAccessoriesString(self, accessoriesString):
+        Toon.Toon.setAccessoriesString(self, accessoriesString)
+
     def setDNA(self, dna):
         if base.cr.newsManager:
             if base.cr.newsManager.isHolidayRunning(ToontownGlobals.SPOOKY_BLACK_CAT):

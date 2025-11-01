@@ -21,6 +21,7 @@ from otp.otpbase import OTPGlobals
 
 from toontown.makeatoon.NameGenerator import NameGenerator
 from toontown.toon.ToonDNA import ToonDNA
+from toontown.toon import Toon
 from toontown.toonbase import TTLocalizer
 
 
@@ -399,7 +400,14 @@ class GetAvatarsOperation(AvatarOperation):
                 # unknown name state.
                 nameState = 0
 
-            potentialAvatars.append([avId, name, fields['setDNAString'][0], index, nameState])
+            # We don't store accessory data as a blob, so we make that up here.
+            hat = fields['setHat']
+            glasses = fields['setGlasses']
+            backpack = fields['setBackpack']
+            shoes = fields['setShoes']
+            accessoryData = Toon.makeAccessoryNetString(hat, glasses, backpack, shoes)
+
+            potentialAvatars.append([avId, name, fields['setDNAString'][0], accessoryData, index, nameState])
 
         self.loginManager.sendUpdateToAccountId(self.sender, 'avatarListResponse', [potentialAvatars])
         self._handleDone()
@@ -412,7 +420,7 @@ class CreateAvatarOperation(GameOperation):
         self.avPosition = None
         self.avDNA = None
 
-    def start(self, avDNA, avPosition):
+    def start(self, avDNA, avAccessories, avPosition):
         # First, perform some basic sanity checking.
         if avPosition >= 6:
             # This index is invalid! Close the connection.
@@ -430,6 +438,7 @@ class CreateAvatarOperation(GameOperation):
         # Store these values:
         self.avPosition = avPosition
         self.avDNA = avDNA
+        self.avAccessories = avAccessories
 
         # Now we can query their account.
         self.__handleRetrieveAccount()
@@ -467,10 +476,15 @@ class CreateAvatarOperation(GameOperation):
         colorString = TTLocalizer.NumToColor[dna.headColor]
         animalType = TTLocalizer.AnimalToSpecies[dna.getAnimal()]
         name = ' '.join((colorString, animalType))
+        accessoryData = Toon.makeAccessoriesFromNetString(self.avAccessories)
         toonFields = {'setName': (name,),
                       'WishNameState': ('OPEN',),
                       'WishName': ('',),
                       'setDNAString': (self.avDNA,),
+                      'setHat': accessoryData['hat'],
+                      'setGlasses': accessoryData['glasses'],
+                      'setBackpack': accessoryData['backpack'],
+                      'setShoes': accessoryData['shoes'],
                       'setDISLid': (self.sender,)}
 
         self.loginManager.air.dbInterface.createObject(self.loginManager.air.dbId,
@@ -930,9 +944,9 @@ class AstronLoginManagerUD(DistributedObjectGlobalUD):
         # Someone wants their avatar list; run a GetAvatarsOperation:
         self.runGameOperation(GetAvatarsOperation)
 
-    def createAvatar(self, avDNA, avPosition):
+    def createAvatar(self, avDNA, avAccessories, avPosition):
         # Someone wants to create a new avatar; run a CreateAvatarOperation:
-        self.runGameOperation(CreateAvatarOperation, avDNA, avPosition)
+        self.runGameOperation(CreateAvatarOperation, avDNA, avAccessories, avPosition)
 
     def setNamePattern(self, avId, p1, f1, p2, f2, p3, f3, p4, f4):
         # Someone wants to use a pattern name; run a SetNamePatternOperation:

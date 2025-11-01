@@ -3,6 +3,7 @@ from . import CatalogItem
 import random
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
+from toontown.toon import ToonDNA
 FTModelName = 0
 FTColor = 1
 FTColorOptions = 2
@@ -1028,7 +1029,33 @@ class CatalogFurnitureItem(CatalogAtticItem.CatalogAtticItem):
                     return ToontownGlobals.P_AlreadyOwnBiggerCloset
                 avatar.b_setMaxClothes(self.getMaxClothes())
             if self.getFlags() & FLTrunk:
+                # Setup the trunk properly if the avatar had accessories, but
+                # not a trunk. First, get the current amount of accessories
+                lastMaxAccessories = avatar.getMaxAccessories()
+
+                # Set it to the new amount
                 avatar.b_setMaxAccessories(self.getMaxAccessories())
+
+                # If it was 0, they didn't have a trunk
+                if lastMaxAccessories == 0:
+                    # If they have a hat, add a 'no selection' hat as if they
+                    # changed hats normally
+                    hat = avatar.getHat()
+                    if hat[0] != 0 and avatar.addToAccessoriesList(ToonDNA.HAT, 0, 0, 0):
+                        avatar.b_setHatList(avatar.getHatList())
+
+                    # You get the gist
+                    glasses = avatar.getGlasses()
+                    if glasses[0] != 0 and avatar.addToAccessoriesList(ToonDNA.GLASSES, 0, 0, 0):
+                        avatar.b_setGlassesList(avatar.getGlassesList())
+
+                    backpack = avatar.getBackpack()
+                    if backpack[0] != 0 and avatar.addToAccessoriesList(ToonDNA.BACKPACK, 0, 0, 0):
+                        avatar.b_setBackpackList(avatar.getBackpackList())
+
+                    shoes = avatar.getShoes()
+                    if shoes[0] != 0 and avatar.addToAccessoriesList(ToonDNA.SHOES, 0, 0, 0):
+                        avatar.b_setShoesList(avatar.getShoesList())
             house.addAtticItem(self)
             if self.getFlags() & FLBank:
                 avatar.b_setMaxBankMoney(self.getMaxBankMoney())

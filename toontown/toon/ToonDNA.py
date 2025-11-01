@@ -1669,15 +1669,32 @@ WORNOUT_WAYLON = 9010
 TailorCollections = {MAKE_A_TOON: [['bss1', 'bss2'],
                ['gss1', 'gss2'],
                ['bbs1', 'bbs2'],
-               ['gsk1', 'gsh1']],
+               ['gsk1', 'gsh1'],
+               ['hbb1', 'hbb2', 'hbb3'],
+               ['hbb1', 'hbb2', 'hbb3', 'hrb1'],
+               [], [], [], [],
+               ['sat1', 'sat2', 'sat3'],
+               ['sat1', 'sat2', 'sat3', 'smj1', 'smj2', 'smj3']],
+ # Normally, Tammy the Tailor's collection matches the Make-a-Toon one,
+ # but I've also added some glasses and backpacks here.
+ # The Make-a-Toon only has hats, shoes, and clothing.
  TAMMY_TAILOR: [['bss1', 'bss2'],
                 ['gss1', 'gss2'],
                 ['bbs1', 'bbs2'],
-                ['gsk1', 'gsh1']],
+                ['gsk1', 'gsh1'],
+                ['hbb1', 'hbb2', 'hbb3'],
+                ['hbb1', 'hbb2', 'hbb3', 'hrb1'],
+                ['grd1', 'ggm1'],
+                ['grd1', 'ggm1'],
+                ['bpb1', 'bpb2', 'bpb3'],
+                ['bpb1', 'bpb2', 'bpb3'],
+                ['sat1', 'sat2', 'sat3'],
+                ['sat1', 'sat2', 'sat3', 'smj1', 'smj2', 'smj3']],
  LONGJOHN_LEROY: [['bss3', 'bss4', 'bss14'],
                   ['gss3', 'gss4', 'gss14'],
                   ['bbs3', 'bbs4'],
-                  ['gsk2', 'gsh2']],
+                  ['gsk2', 'gsh2'],
+                  [], [], [], []],
  TAILOR_HARMONY: [['bss5', 'bss6', 'bss10'],
                   ['gss5', 'gss6', 'gss9'],
                   ['bbs5'],
@@ -1694,14 +1711,25 @@ TailorCollections = {MAKE_A_TOON: [['bss1', 'bss2'],
                   ['gss13', 'gss15'],
                   ['bbs8'],
                   ['gsk7']]}
+
 BOY_SHIRTS = 0
 GIRL_SHIRTS = 1
 BOY_SHORTS = 2
 GIRL_BOTTOMS = 3
+BOY_HATS = 4
+GIRL_HATS = 5
+BOY_GLASSES = 6
+GIRL_GLASSES = 7
+BOY_BACKPACKS = 8
+GIRL_BACKPACKS = 9
+BOY_SHOES = 10
+GIRL_SHOES = 11
+
 HAT = 1
 GLASSES = 2
 BACKPACK = 4
 SHOES = 8
+
 MakeAToonBoyBottoms = []
 MakeAToonBoyShirts = []
 MakeAToonGirlBottoms = []
@@ -1836,6 +1864,58 @@ def getRandomizedBottoms(gender, tailorId = MAKE_A_TOON, generator = None):
     return bottoms
 
 
+def getRandomizedHats(gender, tailorId = MAKE_A_TOON, generator = None):
+    if generator == None:
+        generator = random
+    collection = TailorCollections[tailorId]
+
+    try:
+        if gender == 'm':
+            collection = collection[BOY_HATS][:]
+        else:
+            collection = collection[GIRL_HATS][:]
+    except:
+        collection = None
+
+    hats = []
+    hats.append((0, 0, 0))
+
+    if collection == None:
+        return hats
+
+    random.shuffle(collection)
+    for style in collection:
+        hats.append((HatStyles[style][0], HatStyles[style][1], HatStyles[style][2]))
+
+    return hats
+
+
+def getRandomizedShoes(gender, tailorId = MAKE_A_TOON, generator = None):
+    if generator == None:
+        generator = random
+    collection = TailorCollections[tailorId]
+
+    try:
+        if gender == 'm':
+            collection = collection[BOY_SHOES][:]
+        else:
+            collection = collection[GIRL_SHOES][:]
+    except:
+        collection = None
+
+    shoes = []
+    shoes.append((0, 0, 0))
+
+    if collection == None:
+        return shoes
+
+    random.shuffle(collection)
+    for style in collection:
+        shoes.append((ShoesStyles[style][0], ShoesStyles[style][1], ShoesStyles[style][2]))
+
+    return shoes
+
+
 def getTops(gender, tailorId = MAKE_A_TOON):
     if gender == 'm':
         collection = TailorCollections[tailorId][BOY_SHIRTS]
@@ -1900,6 +1980,90 @@ def getAllBottoms(gender, output = 'both'):
                 bottoms.append((bottomIdx, color))
 
     return bottoms
+
+
+def getHats(gender, tailorId = MAKE_A_TOON):
+    try:
+        if gender == 'm':
+            collection = TailorCollections[tailorId][BOY_HATS]
+        else:
+            collection = TailorCollections[tailorId][GIRL_HATS]
+    except:
+        collection = None
+
+    hats = []
+    hats.append((0, 0, 0))
+
+    if collection == None:
+        return hats
+
+    for style in collection:
+        hats.append((HatStyles[style][0], HatStyles[style][1], HatStyles[style][2]))
+
+    return hats
+
+
+def getGlasses(gender, tailorId = MAKE_A_TOON):
+    try:
+        if gender == 'm':
+            collection = TailorCollections[tailorId][BOY_GLASSES]
+        else:
+            collection = TailorCollections[tailorId][GIRL_GLASSES]
+    except:
+        collection = None
+
+    glasses = []
+    glasses.append((0, 0, 0))
+
+    if collection == None:
+        return glasses
+
+    for style in collection:
+        glasses.append((GlassesStyles[style][0], GlassesStyles[style][1], GlassesStyles[style][2]))
+
+    return glasses
+
+
+def getBackpacks(gender, tailorId = MAKE_A_TOON):
+    try:
+        if gender == 'm':
+            collection = TailorCollections[tailorId][BOY_BACKPACKS]
+        else:
+            collection = TailorCollections[tailorId][GIRL_BACKPACKS]
+    except:
+        collection = None
+
+    backpacks = []
+    backpacks.append((0, 0, 0))
+
+    if collection == None:
+        return backpacks
+
+    for style in collection:
+        backpacks.append((BackpackStyles[style][0], BackpackStyles[style][1], BackpackStyles[style][2]))
+
+    return backpacks
+
+
+def getShoes(gender, tailorId = MAKE_A_TOON):
+    try:
+        if gender == 'm':
+            collection = TailorCollections[tailorId][BOY_SHOES]
+        else:
+            collection = TailorCollections[tailorId][GIRL_SHOES]
+    except:
+        collection = None
+
+    shoes = []
+    shoes.append((0, 0, 0))
+
+    if collection == None:
+        return shoes
+
+    for style in collection:
+        shoes.append((ShoesStyles[style][0], ShoesStyles[style][1], ShoesStyles[style][2]))
+
+    return shoes
 
 
 allColorsList = [VBase4(1.0, 1.0, 1.0, 1.0),

@@ -2,10 +2,11 @@
 
 class PotentialAvatar:
 
-    def __init__(self, id, names, dna, position, allowedName, creator = 1, shared = 1, online = 0, wishState = 'CLOSED', wishName = '', defaultShard = 0, lastLogout = 0):
+    def __init__(self, id, names, dna, accessories, position, allowedName, creator = 1, shared = 1, online = 0, wishState = 'CLOSED', wishName = '', defaultShard = 0, lastLogout = 0):
         self.id = id
         self.name = names[0]
         self.dna = dna
+        self.accessories = accessories
         self.avatarType = None
         self.position = position
         self.wantName = names[1]

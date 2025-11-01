@@ -1,6 +1,8 @@
 from direct.actor import Actor
 from direct.task import Task
 from toontown.toonbase import ToontownGlobals
+from . import ToonDNA
+from . import AccessoryGlobals
 import random
 from panda3d.core import *
 from direct.interval.IntervalGlobal import *
@@ -129,6 +131,8 @@ class ToonHead(Actor.Actor):
             self.__stareAtPoint = self.__defaultStarePoint
             self.__stareAtTime = 0
             self.lookAtPositionCallbackArgs = None
+            self.hatNodes = []
+            self.glassesNodes = []
 
         return
 
@@ -400,6 +404,88 @@ class ToonHead(Actor.Actor):
         self.eyelids.request('open')
         self.setupMuzzles(style)
         return headHeight
+
+    def generateHat(self, dna, hat, fromRTM = False):
+        if hat[0] >= len(ToonDNA.HatModels):
+            return
+        if len(self.hatNodes) > 0:
+            for hatNode in self.hatNodes:
+                hatNode.removeNode()
+
+            self.hatNodes = []
+        self.showEars()
+        if hat[0] != 0:
+            hatGeom = loader.loadModel(ToonDNA.HatModels[hat[0]], okMissing=True)
+            if hatGeom:
+                if hat[0] == 54:
+                    self.hideEars()
+                if hat[1] != 0:
+                    texName = ToonDNA.HatTextures[hat[1]]
+                    tex = loader.loadTexture(texName, okMissing=True)
+                    if tex != None:
+                        tex.setMinfilter(Texture.FTLinearMipmapLinear)
+                        tex.setMagfilter(Texture.FTLinear)
+                        hatGeom.setTexture(tex, 1)
+                if fromRTM:
+                    importlib.reload(AccessoryGlobals)
+                transOffset = None
+                if AccessoryGlobals.ExtendedHatTransTable.get(hat[0]):
+                    transOffset = AccessoryGlobals.ExtendedHatTransTable[hat[0]].get(dna.head[:2])
+                if transOffset is None:
+                    transOffset = AccessoryGlobals.HatTransTable.get(dna.head[:2])
+                    if transOffset is None:
+                        return
+                hatGeom.setPos(transOffset[0][0], transOffset[0][1], transOffset[0][2])
+                hatGeom.setHpr(transOffset[1][0], transOffset[1][1], transOffset[1][2])
+                hatGeom.setScale(transOffset[2][0], transOffset[2][1], transOffset[2][2])
+                headNodes = self.findAllMatches('**/__Actor_head')
+                for headNode in headNodes:
+                    hatNode = headNode.attachNewNode('hatNode')
+                    self.hatNodes.append(hatNode)
+                    hatGeom.instanceTo(hatNode)
+
+        return
+
+    def generateGlasses(self, dna, glasses, fromRTM = False):
+        if glasses[0] >= len(ToonDNA.GlassesModels):
+            return
+        if len(self.glassesNodes) > 0:
+            for glassesNode in self.glassesNodes:
+                glassesNode.removeNode()
+
+            self.glassesNodes = []
+        self.showEyelashes()
+        if glasses[0] != 0:
+            glassesGeom = loader.loadModel(ToonDNA.GlassesModels[glasses[0]], okMissing=True)
+            if glassesGeom:
+                if glasses[0] in [15, 16]:
+                    self.hideEyelashes()
+                if glasses[1] != 0:
+                    texName = ToonDNA.GlassesTextures[glasses[1]]
+                    tex = loader.loadTexture(texName, okMissing=True)
+                    if tex != None:
+                        tex.setMinfilter(Texture.FTLinearMipmapLinear)
+                        tex.setMagfilter(Texture.FTLinear)
+                        glassesGeom.setTexture(tex, 1)
+                if fromRTM:
+                    importlib.reload(AccessoryGlobals)
+                transOffset = None
+                if AccessoryGlobals.ExtendedGlassesTransTable.get(glasses[0]):
+                    transOffset = AccessoryGlobals.ExtendedGlassesTransTable[glasses[0]].get(dna.head[:2])
+                if transOffset is None:
+                    transOffset = AccessoryGlobals.GlassesTransTable.get(dna.head[:2])
+                    if transOffset is None:
+                        return
+                glassesGeom.setPos(transOffset[0][0], transOffset[0][1], transOffset[0][2])
+                glassesGeom.setHpr(transOffset[1][0], transOffset[1][1], transOffset[1][2])
+                glassesGeom.setScale(transOffset[2][0], transOffset[2][1], transOffset[2][2])
+                headNodes = self.findAllMatches('**/__Actor_head')
+                for headNode in headNodes:
+                    glassesNode = headNode.attachNewNode('glassesNode')
+                    self.glassesNodes.append(glassesNode)
+                    glassesGeom.instanceTo(glassesNode)
+
+        return
 
     def loadPumpkin(self, headStyle, lod, copy):
         if hasattr(base, 'launcher') and (not base.launcher or base.launcher and base.launcher.getPhaseComplete(4)):
