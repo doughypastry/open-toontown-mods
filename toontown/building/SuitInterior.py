@@ -152,10 +152,12 @@ class SuitInterior(Place.Place):
         self.townBattle.enter(event, self.fsm.getStateNamed('battle'), bldg=1, creditMultiplier=mult)
         base.localAvatar.b_setAnimState('off', 1)
         base.localAvatar.cantLeaveGame = 1
+        self.enterFLM()
 
     def exitBattle(self):
         self.townBattle.exit()
         base.localAvatar.cantLeaveGame = 0
+        self.exitFLM()
 
     def enterWalk(self, teleportIn = 0):
         Place.Place.enterWalk(self, teleportIn)

@@ -142,6 +142,7 @@ class FactoryInterior(BattlePlace.BattlePlace):
         BattlePlace.BattlePlace.enterBattle(self, event)
         self.ignore('teleportQuery')
         base.localAvatar.setTeleportAvailable(0)
+        self.enterFLM()
 
     def enterTownBattle(self, event):
         mult = ToontownBattleGlobals.getFactoryCreditMultiplier(self.zoneId)
@@ -153,6 +154,7 @@ class FactoryInterior(BattlePlace.BattlePlace):
         BattlePlace.BattlePlace.exitBattle(self)
         self.loader.music.stop()
         base.playMusic(self.music, looping=1, volume=0.8)
+        self.exitFLM()
 
     def enterStickerBook(self, page = None):
         BattlePlace.BattlePlace.enterStickerBook(self, page)

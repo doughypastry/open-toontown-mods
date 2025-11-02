@@ -44,6 +44,7 @@ class BattlePlace(Place.Place):
         self.accept('teleportQuery', self.handleTeleportQuery)
         base.localAvatar.setTeleportAvailable(1)
         base.localAvatar.cantLeaveGame = 1
+        self.enterFLM()
 
     def enterTownBattle(self, event):
         self.loader.townBattle.enter(event, self.fsm.getStateNamed('battle'))
@@ -55,6 +56,7 @@ class BattlePlace(Place.Place):
         base.localAvatar.cantLeaveGame = 0
         base.localAvatar.setTeleportAvailable(0)
         self.ignore('teleportQuery')
+        self.exitFLM()
 
     def handleBattleEntry(self):
         self.fsm.request('battle')

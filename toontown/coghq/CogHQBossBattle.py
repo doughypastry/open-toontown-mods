@@ -144,9 +144,11 @@ class CogHQBossBattle(BattlePlace.BattlePlace):
         base.localAvatar.b_setAnimState('off', 1)
         base.localAvatar.setTeleportAvailable(0)
         base.localAvatar.cantLeaveGame = 1
+        self.enterFLM()
 
     def exitBattle(self):
         self.townBattle.exit()
+        self.exitFLM()
 
     def enterFinalBattle(self):
         self.walkStateData.enter()
