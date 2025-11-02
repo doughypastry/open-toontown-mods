@@ -2,6 +2,9 @@
 *.pyo
 *.pyd
 *.log
+astron/
+config/spellbook.json
+data/
 resources/
 news/
 sign/
@@ -11,7 +14,7 @@ whitelist/
 *.jpg
 .idea
 venv/
-*.json
+useropt.json
 !win32/.vscode/tasks.json
 !linux/.vscode/tasks.json
 !darwin/.vscode/tasks.json
