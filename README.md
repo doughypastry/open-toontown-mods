@@ -2,13 +2,53 @@
 
 A fork of Open Toontown with some useful feature branches.
 
-The `main` branch has some code that is missing from Open Toontown, but is otherwise 'vanilla' Toontown Online experience. The following branches add functionality or bug fixes:
+The `main` branch has some code that is missing from Open Toontown, but is otherwise 'vanilla' Toontown Online experience. The branches listed below add functionality, refactor code, or fix bugs. Note that I may occasionally rewrite the history of those branches to match any changes done to `main`.
 
-* `avatar-panels-in-battle`: Allows the player to click on a Cog while in a battle.
-* `accessories-in-clothes-gui`: Allows the player to wear accessories in the Clothing Shop. Also supports creating a Toon with accessories.
-* `remove-gender`: Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make-A-Toon.
+---
 
-Note that I may occasionally rewrite the history of those branches to match any changes done to `main`.
+## `avatar-panels-in-battle`
+![Screenshot of a battle where the panel that appears when you click on a Cog is visible](docs/screenshots/avatar-panels-in-battle.png)
+
+Allows the player to click on a Cog while in a battle.
+
+**Feature:** Yes  
+**Bugfix:** No  
+**Changes `toon.dc`:** No  
+**Changes the database structure:** Not applicable  
+
+## `accessories-in-clothes-gui`
+![The Clothing Shop interface, but with options for hats, glasses, backpacks, and shoes](docs/screenshots/accessories-in-clothes-gui-1.png)
+![The Make-A-Toon interface, but with options for hats and shoes](docs/screenshots/accessories-in-clothes-gui-2.png)
+
+Allows the player to wear accessories in the Clothing Shop. Also supports creating a Toon with accessories.
+
+**Feature:** Yes  
+**Bugfix:** No  
+**Changes `toon.dc`:** Yes  
+**Changes the database structure:** No  
+
+## `remove-gender`
+Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make-A-Toon.
+
+![The Make-A-Toon interface, but with an option for eyelashes](docs/screenshots/remove-gender-1.png)
+![The Make-A-Toon interface, but with a 'boy' Toon wearing a skirt](docs/screenshots/remove-gender-2.png)
+
+**Feature:** Yes  
+**Bugfix:** No  
+**Changes `toon.dc`:** Yes  
+**Changes the database structure:** No  
+
+## `accessories-in-catalog-gui`
+![A Cattlelog page showing "Actions Lessons", but the player's accessories are visible](docs/screenshots/accessories-in-catalog-gui.png)
+
+This very simple modification to `CatalogEmoteItem` makes accessories visible in the 'Acting Lessons' Cattlelog items.
+
+**Feature:** Yes  
+**Bugfix:** ?  
+**Changes `toon.dc`:** No  
+**Changes the database structure:** Not applicable  
+
+---
 
 Original README below:
 
