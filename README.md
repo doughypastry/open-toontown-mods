@@ -7,7 +7,7 @@ The `main` branch has some code that is missing from Open Toontown, but is other
 ---
 
 ## `avatar-panels-in-battle`
-![Screenshot of a battle where the panel that appears when you click on a Cog is visible](docs/screenshots/avatar-panels-in-battle.png)
+<img src="docs/screenshots/avatar-panels-in-battle.png" alt="The battle interface. The panel that appears when you click on a Cog is visible." width="400" height="300">
 
 Allows the player to click on a Cog while in a battle.
 
@@ -17,8 +17,8 @@ Allows the player to click on a Cog while in a battle.
 **Changes the database structure:** Not applicable  
 
 ## `accessories-in-clothes-gui`
-![The Clothing Shop interface, but with options for hats, glasses, backpacks, and shoes](docs/screenshots/accessories-in-clothes-gui-1.png)
-![The Make-A-Toon interface, but with options for hats and shoes](docs/screenshots/accessories-in-clothes-gui-2.png)
+<img src="docs/screenshots/accessories-in-clothes-gui-1.png" alt="The Clothing Shop interface. Under the regular clothing options, there are new options for hats, glasses, backpacks, and shoes." width="400" height="300">
+<img src="docs/screenshots/accessories-in-clothes-gui-2.png" alt='The "Choose Your Clothes" interface. Under the regular clothing options, there are new options for hats and shoes.' width="400" height="300">
 
 Allows the player to wear accessories in the Clothing Shop. Also supports creating a Toon with accessories.
 
@@ -28,10 +28,10 @@ Allows the player to wear accessories in the Clothing Shop. Also supports creati
 **Changes the database structure:** No  
 
 ## `remove-gender`
-Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make-A-Toon.
+<img src="docs/screenshots/remove-gender-1.png" alt='The "Choose Your Type" interface. There is an option for eyelashes.' width="400" height="300">
+<img src="docs/screenshots/remove-gender-2.png" alt='The "Choose Your Clothes" interface. It shows a Toon without eyelashes wearing a skirt.' width="400" height="300">
 
-![The Make-A-Toon interface, but with an option for eyelashes](docs/screenshots/remove-gender-1.png)
-![The Make-A-Toon interface, but with a 'boy' Toon wearing a skirt](docs/screenshots/remove-gender-2.png)
+Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make-A-Toon.
 
 **Feature:** Yes  
 **Bugfix:** No  
@@ -39,9 +39,9 @@ Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make
 **Changes the database structure:** No  
 
 ## `accessories-in-catalog-gui`
-![A Cattlelog page showing "Actions Lessons", but the player's accessories are visible](docs/screenshots/accessories-in-catalog-gui.png)
+<img src="docs/screenshots/accessories-in-catalog-gui.png" alt='A Cattlelog page showing "Actions Lessons". The accessories the player is wearing can be seen on the Toons.' width="400" height="300">
 
-This very simple modification to `CatalogEmoteItem` makes accessories visible in the 'Acting Lessons' Cattlelog items.
+This very simple modification to `CatalogEmoteItem` makes accessories visible in the "Acting Lessons" Cattlelog items.
 
 **Feature:** Yes  
 **Bugfix:** ?  
