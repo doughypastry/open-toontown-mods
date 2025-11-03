@@ -58,6 +58,10 @@ class CatalogEmoteItem(CatalogItem.CatalogItem):
         else:
             toon = Toon.Toon()
             toon.setDNA(avatar.style)
+            toon.setHat(*avatar.hat)
+            toon.setGlasses(*avatar.glasses)
+            toon.setBackpack(*avatar.backpack)
+            toon.setShoes(*avatar.shoes)
             toon.loop('neutral')
         toon.setH(180)
         model, ival = self.makeFrameModel(toon, 0)
