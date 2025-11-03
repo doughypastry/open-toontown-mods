@@ -265,7 +265,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
             self.interior.requestDelete()
             del self.interior
             task.delayTime = 15.0
-            return task.again
+            return Task.again
         self.notify.info('victorsTimedOutTask: suspicious players remaining, advancing state.')
         for i in range(len(self.victorList)):
             if self.victorList[i] and self.victorResponses[i] == 0:

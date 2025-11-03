@@ -1,6 +1,12 @@
 from direct.directtools.DirectSelection import *
 from direct.directtools.DirectUtil import ROUND_TO
 from direct.directtools.DirectGeometry import LineNodePath
+from direct.directtools.DirectGlobals import (
+    SKIP_BACKFACE,
+    SKIP_CAMERA,
+    SKIP_UNPICKABLE,
+    SKIP_ALL
+)
 from direct.gui.DirectGui import *
 from panda3d.core import *
 from direct.showbase.DirectObject import DirectObject
@@ -42,6 +48,9 @@ NormalPickerPanelColor = (1, 0.9, 0.745, 1)
 DisabledPickerPanelColor = (0.7, 0.65, 0.58, 1)
 DeletePickerPanelColor = (1, 0.4, 0.4, 1)
 DisabledDeletePickerPanelColor = (0.7, 0.3, 0.3, 1)
+
+def clamp(val, minVal, maxVal):
+    return max(minVal, min(val, maxVal))
 
 class FurnitureItemPanel(DirectButton):
 
@@ -907,9 +916,9 @@ class ObjectManager(NodePath, DirectObject):
         tNodePath.setPos(self.selectedObject.center)
         nearVec = self.getNearProjectionPoint(tNodePath)
         nearVec *= base.camLens.getFocalLength() / base.camLens.getNear()
-        render2dX = CLAMP(nearVec[0] / (base.camLens.getFilmSize()[0] / 2.0), -.9, 0.9)
+        render2dX = clamp(nearVec[0] / (base.camLens.getFilmSize()[0] / 2.0), -.9, 0.9)
         aspect2dX = render2dX * base.getAspectRatio()
-        aspect2dZ = CLAMP(nearVec[2] / (base.camLens.getFilmSize()[1] / 2.0), -.8, 0.9)
+        aspect2dZ = clamp(nearVec[2] / (base.camLens.getFilmSize()[1] / 2.0), -.8, 0.9)
         tNodePath.removeNode()
         return Vec3(aspect2dX, 0, aspect2dZ)
 
@@ -1293,8 +1302,12 @@ class ObjectManager(NodePath, DirectObject):
         if retcode < 0:
             self.notify.info('Unable to bring furniture item %s into room, reason %s.' % (itemIndex, retcode))
             return
-        mo = self.loadObject(dfitem)
-        objectId = mo.id()
+        # FIXME: This can be None. See DistributedFurnitureManager
+        if dfitem:
+            mo = self.loadObject(dfitem)
+            objectId = mo.id()
+        else:
+            objectId = None
         self.atticItemPanels[itemIndex].destroy()
         del self.atticItemPanels[itemIndex]
         for i in range(itemIndex, len(self.atticItemPanels)):
@@ -1302,8 +1315,9 @@ class ObjectManager(NodePath, DirectObject):
 
         self.regenerateAtticPicker()
         if self.inRoomPicker:
-            panel = FurnitureItemPanel(dfitem.item, objectId, command=self.requestReturnToAttic, helpCategory='FurnitureItemPanelRoom')
-            self.inRoomPanels.append(panel)
+            if objectId:
+                panel = FurnitureItemPanel(dfitem.item, objectId, command=self.requestReturnToAttic, helpCategory='FurnitureItemPanelRoom')
+                self.inRoomPanels.append(panel)
             self.regenerateInRoomPicker()
 
     def deleteItemFromAttic(self, item, itemIndex):

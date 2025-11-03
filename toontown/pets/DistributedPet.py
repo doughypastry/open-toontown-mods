@@ -377,7 +377,8 @@ class DistributedPet(DistributedSmoothNode.DistributedSmoothNode, Pet.Pet, PetBa
         return self.mood.getDominantMood()
 
     def getRequestID(self):
-        return CLIENT_GET_PET_DETAILS
+        # Formerly this returned CLIENT_GET_PET_DETAILS, which is no longer a thing
+        return None
 
     def teleportIn(self, timestamp):
         self.lockPet()

@@ -757,7 +757,7 @@ class QuestManagerAI:
         return
 
     def toonUsedPhone(self, av):
-        # This is notifying us that a toon used his phone
+        # This is notifying us that a toon used their phone
         # See if this toon has a phone quest.  If so, update the progress.
         avQuests = av.quests
         avId = av.getDoId()

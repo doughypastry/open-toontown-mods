@@ -19,6 +19,8 @@ from toontown.coghq.PromotionManagerAI import PromotionManagerAI
 from toontown.distributed.ToontownDistrictAI import ToontownDistrictAI
 from toontown.distributed.ToontownDistrictStatsAI import ToontownDistrictStatsAI
 from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
+from toontown.estate.EstateManagerAI import EstateManagerAI
+from toontown.parties.ToontownTimeManager import ToontownTimeManager
 from toontown.hood import ZoneUtil
 from toontown.hood.BRHoodDataAI import BRHoodDataAI
 from toontown.hood.BossbotHQDataAI import BossbotHQDataAI
@@ -53,6 +55,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.tutorial.TutorialManagerAI import TutorialManagerAI
 from toontown.uberdog.DistributedInGameNewsMgrAI import DistributedInGameNewsMgrAI
 import os
+import time
 
 
 class ToontownAIRepository(ToontownInternalRepository):
@@ -92,6 +95,9 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.catalogManager = None
         self.trophyMgr = None
         self.safeZoneManager = None
+        self.estateMgr = None
+        self.deliveryManager = None
+        self.toontownTimeManager = None
         self.magicWordManager = None
         self.partyManager = None
         self.zoneTable = {}
@@ -219,6 +225,18 @@ class ToontownAIRepository(ToontownInternalRepository):
         # Generate our safezone manager...
         self.safeZoneManager = SafeZoneManagerAI(self)
         self.safeZoneManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        # Generate our estate manager...
+        self.estateMgr = EstateManagerAI(self)
+        self.estateMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        # Generate our delivery manager...
+        self.deliveryManager = self.generateGlobalObject(OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER,
+                                                         'DistributedDeliveryManager')
+
+        # Create our time manager...
+        self.toontownTimeManager = ToontownTimeManager(serverTimeUponLogin=int(time.time()),
+                                                       globalClockRealTimeUponLogin=globalClock.getRealTime())
 
         # Generate our magic word manager...
         self.magicWordManager = ToontownMagicWordManagerAI(self)

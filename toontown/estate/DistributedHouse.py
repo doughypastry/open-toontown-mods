@@ -2,6 +2,9 @@ from panda3d.core import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.gui.DirectGui import *
 from panda3d.core import *
+from panda3d.toontown import *
+from panda3d.otp import Nametag
+from panda3d.otp import NametagGroup
 from direct.distributed.ClockDelta import *
 from toontown.minigame.OrthoWalk import *
 from string import *

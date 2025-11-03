@@ -1,6 +1,6 @@
 from panda3d.core import *
+from panda3d.otp import *
 from direct.gui.DirectGui import *
-from panda3d.core import *
 from direct.gui.DirectScrolledList import *
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TTDialog

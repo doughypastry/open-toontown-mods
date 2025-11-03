@@ -139,7 +139,12 @@ class DistributedFurnitureManager(DistributedObject.DistributedObject):
 
     def moveItemFromAtticResponse(self, retcode, objectId, context):
         if retcode >= 0:
-            dfitem = base.cr.doId2do[objectId]
+            # FIXME: Why can the objectId simply not exist?
+            # Prevent a crash here, but a proper fix needs to be done.
+            try:
+                dfitem = base.cr.doId2do[objectId]
+            except:
+                dfitem = None
         else:
             dfitem = None
         self.doCallbackContext(context, [retcode, dfitem])

@@ -204,6 +204,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.hostedParties = []
         self.partiesInvitedTo = []
         self.partyReplyInfoBases = []
+        self.instantDelivery = False # CUSTOM: Instant delivery for the catalog
         return
 
     def generate(self):

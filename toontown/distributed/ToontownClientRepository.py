@@ -423,11 +423,8 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
             pad.delayDelete.destroy()
 
     def __sendGetAvatarDetails(self, avId):
-        datagram = PyDatagram()
-        avatar = self.__queryAvatarMap[avId].avatar
-        datagram.addUint16(avatar.getRequestID())
-        datagram.addUint32(avId)
-        self.send(datagram)
+        # TODO: Reimplement this.
+        print('__sendGetAvatarDetails TODO')
 
     def handleGetAvatarDetailsResp(self, di):
         avId = di.getUint32()
@@ -834,17 +831,8 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         return 1
 
     def removeFriend(self, avatarId):
-        base.localAvatar.sendUpdate('friendsNotify', [base.localAvatar.doId, 1], sendToId=avatarId)
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_REMOVE_FRIEND)
-        datagram.addUint32(avatarId)
-        self.send(datagram)
-        self.estateMgr.removeFriend(base.localAvatar.doId, avatarId)
-        for pair in base.localAvatar.friendsList:
-            friendId = pair[0]
-            if friendId == avatarId:
-                base.localAvatar.friendsList.remove(pair)
-                return
+        # TODO: Reimplement this.
+        print('removeFriend TODO')
 
     def clearFriendState(self):
         self.friendsMap = {}
@@ -853,14 +841,8 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.friendsListError = 0
 
     def sendGetFriendsListRequest(self):
-        if __astron__:
-            print('sendGetFriendsListRequest TODO')
-        else:
-            self.friendsMapPending = 1
-            self.friendsListError = 0
-            datagram = PyDatagram()
-            datagram.addUint16(CLIENT_GET_FRIEND_LIST)
-            self.send(datagram)
+        # TODO: Reimplement this.
+        print('sendGetFriendsListRequest TODO')
 
     def cleanPetsFromFriendsMap(self):
         for objId, obj in list(self.friendsMap.items()):

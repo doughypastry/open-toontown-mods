@@ -690,6 +690,26 @@ class Teleport(MagicWord):
 
         return f"Requested to teleport {toon.getName()} to zone {zone}.", toon.doId, [ZoneUtil.getBranchLoaderName(zone), ZoneUtil.getToonWhereName(zone), "", ZoneUtil.getHoodId(zone), zone, 0]
 
+class Catalog(MagicWord):
+    desc = "Gives the toon a new catalog."
+    execLocation = MagicWordConfig.EXEC_LOC_SERVER
+
+    def handleWord(self, invoker, avId, toon, *args):
+        simbase.air.catalogManager.deliverCatalogFor(toon)
+
+class InstaDelivery(MagicWord):
+    aliases = ["fastdel"]
+    desc = "Instant delivery of an item."
+    execLocation = MagicWordConfig.EXEC_LOC_SERVER
+
+    def handleWord(self, invoker, avId, toon, *args):
+        invoker.instantDelivery = not invoker.instantDelivery
+        if invoker.instantDelivery:
+            for item in (toon.onOrder + toon.onGiftOrder):
+                item.deliveryDate = int(time.time() / 60)  # Deliver all the packages that they already ordered or have been gifted, too.
+            toon.b_setDeliverySchedule(toon.onOrder + toon.onGiftOrder)
+        return "Instant Delivery has been turned {0}.".format('on' if invoker.instantDelivery else 'off')
+
 class ToggleSleep(MagicWord):
     aliases = ["sleep", "nosleep", "neversleep", "togglesleeping", "insomnia"]
     desc = "Toggles sleeping for the target."
