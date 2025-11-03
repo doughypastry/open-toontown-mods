@@ -1,6 +1,14 @@
 # open-toontown-mods
 
-A fork of Open Toontown with some useful feature branches (will list them here later).
+A fork of Open Toontown with some useful feature branches.
+
+The `main` branch has some code that is missing from Open Toontown, but is otherwise 'vanilla' Toontown Online experience. The following branches add functionality or bug fixes:
+
+* `avatar-panels-in-battle`: Allows the player to click on a Cog while in a battle.
+* `accessories-in-clothes-gui`: Allows the player to wear accessories in the Clothing Shop. Also supports creating a Toon with accessories.
+* `remove-gender`: Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make-A-Toon.
+
+Note that I may occasionally rewrite the history of those branches to match any changes done to `main`.
 
 Original README below:
 
