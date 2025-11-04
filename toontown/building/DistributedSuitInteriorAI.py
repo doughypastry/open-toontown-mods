@@ -199,8 +199,10 @@ class DistributedSuitInteriorAI(DistributedObjectAI.DistributedObjectAI):
             return
         avatar = self.air.doId2do.get(avId)
         if avatar != None:
+            # We don't need to save all of the accessory data, since only the
+            # Toon heads are rendered in the end, but it simplifies the code.
             self.savedByMap[avId] = (
-             avatar.getName(), avatar.dna.asTuple())
+             avatar.getName(), avatar.dna.asTuple(), avatar.getAccessoryData())
         self.responses[avId] += 1
         if self.__allToonsResponded():
             self.fsm.request('Elevator')
@@ -464,7 +466,7 @@ class DistributedSuitInteriorAI(DistributedObjectAI.DistributedObjectAI):
         for v in victors:
             tuple = self.savedByMap.get(v)
             if tuple:
-                savedBy.append([v, tuple[0], tuple[1]])
+                savedBy.append([v, tuple[0], tuple[1], tuple[2]])
 
         self.bldg.fsm.request('waitForVictors', [victors, savedBy])
         self.d_setState('Reward')

@@ -957,9 +957,10 @@ class OTPClientRepository(ClientRepositoryBase):
                 avNames[2] = di.getString()
                 avNames[3] = di.getString()
                 avDNA = di.getBlob()
+                avAccessories = di.getBlob()
                 avPosition = di.getUint8()
                 aname = di.getUint8()
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
+                potAv = PotentialAvatar(avNum, avNames, avDNA, avAccessories, avPosition, aname)
                 avList.append(potAv)
 
             self.avList = avList
@@ -982,9 +983,10 @@ class OTPClientRepository(ClientRepositoryBase):
                  '']
                 avNames[0] = di.getString()
                 avDNA = None
+                avAccessories = None
                 avPosition = di.getUint8()
                 aname = None
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
+                potAv = PotentialAvatar(avNum, avNames, avDNA, avAccessories, avPosition, aname)
                 avList.append(potAv)
 
             self.avList = avList
@@ -998,7 +1000,7 @@ class OTPClientRepository(ClientRepositoryBase):
         @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
         def handleAvatarListResponse(self, avatarList):
             avList = []
-            for avNum, avName, avDNA, avPosition, nameState in avatarList:
+            for avNum, avName, avDNA, avAccessories, avPosition, nameState in avatarList:
                 avNames = ['',
                  '',
                  '',
@@ -1012,7 +1014,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     avNames[3] = avName
 
                 aname = int(nameState == 1)
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
+                potAv = PotentialAvatar(avNum, avNames, avDNA, avAccessories, avPosition, aname)
                 avList.append(potAv)
 
             self.avList = avList

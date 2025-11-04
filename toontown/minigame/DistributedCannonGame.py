@@ -353,7 +353,7 @@ class DistributedCannonGame(DistributedMinigame):
         toon.setPosHpr(0, 0, -(toon.getHeight() / 2.0), 0, 0, 0)
         self.toonModelDict[avId] = toonParent
         head = ToonHead()
-        head.setupHead(self.getAvatar(avId).style)
+        head.fromAvatar(self.getAvatar(avId))
         head.reparentTo(base.hidden)
         self.toonHeadDict[avId] = head
         toon = self.getAvatar(avId)

@@ -7,7 +7,7 @@ from direct.fsm import ClassicFSM, State
 from direct.distributed import DistributedObjectAI
 from direct.fsm import State
 from toontown.toon import NPCToons
-from toontown.toon.ToonDNA import ToonDNA
+from toontown.toon import ToonDNA
 
 class DistributedToonInteriorAI(DistributedObjectAI.DistributedObjectAI):
 
@@ -41,10 +41,14 @@ class DistributedToonInteriorAI(DistributedObjectAI.DistributedObjectAI):
 
     def getSavedBy(self):
         savedBy = []
-        for avId, name, dnaTuple in self.building.savedBy:
-            dna = ToonDNA()
+        for avId, name, dnaTuple, accessories in self.building.savedBy:
+            dna = ToonDNA.ToonDNA()
             dna.newToonFromProperties(*dnaTuple)
-            savedBy.append([avId, name, dna.makeNetString()])
+            accessoryString = ToonDNA.makeAccessoryNetString(accessories['hat'],
+                accessories['glasses'],
+                accessories['backpack'],
+                accessories['shoes'])
+            savedBy.append([avId, name, dna.makeNetString(), accessoryString])
         return savedBy
 
     def getState(self):

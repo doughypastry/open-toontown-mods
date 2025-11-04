@@ -313,7 +313,7 @@ dclass FriendManager : DistributedObject {
   inviteeAcknowledgeCancel(int32) airecv clsend;
   friendConsidering(int8, int32);
   friendResponse(int8, int32);
-  inviteeFriendQuery(int32, string, blob, int32);
+  inviteeFriendQuery(int32, string, blob, blob, int32);
   inviteeCancelFriendQuery(int32);
   requestSecret() airecv clsend;
   requestSecretResponse(int8, string);
@@ -518,6 +518,7 @@ struct PotentialAvatar {
   uint32 avNum;
   string avName;
   blob avDNA;
+  blob avAccessories;
   uint8 avPosition;
   uint8 nameState;
 };

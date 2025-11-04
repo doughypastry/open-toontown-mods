@@ -89,6 +89,7 @@ class BoardingGroupInviterPanelBase(ToonHeadDialog.ToonHeadDialog):
             self.avatar = avatar
             self.avatarName = avatar.getName()
             avatarDNA = avatar.getStyle()
+            avatarAccessories = avatar.getAccessoryData()
         self.defineParams()
         command = self.handleButton
         optiondefs = (('dialogName', self.dialogName, None),
@@ -105,7 +106,7 @@ class BoardingGroupInviterPanelBase(ToonHeadDialog.ToonHeadDialog):
          ('pos', (0.45, 0, 0.75), None),
          ('scale', 0.75, None))
         self.defineoptions(kw, optiondefs)
-        ToonHeadDialog.ToonHeadDialog.__init__(self, avatarDNA)
+        ToonHeadDialog.ToonHeadDialog.__init__(self, avatarDNA, avatarAccessories)
         self.show()
         return
 

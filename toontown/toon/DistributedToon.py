@@ -300,6 +300,14 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def setShoes(self, idx, textureIdx, colorIdx):
         Toon.Toon.setShoes(self, idx, textureIdx, colorIdx)
 
+    def getAccessoryData(self):
+        return {
+            'hat': self.getHat(),
+            'glasses': self.getGlasses(),
+            'backpack': self.getBackpack(),
+            'shoes': self.getShoes()
+        }
+
     def setGM(self, type):
         wasGM = self._isGM
         self._isGM = type != 0

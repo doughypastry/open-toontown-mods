@@ -41,15 +41,18 @@ class AvatarChoice(DirectButton):
                     self.mode = AvatarChoice.MODE_LOCKED
                     self.name = ''
                     self.dna = None
+                    self.accessories = None
         if self.mode is not AvatarChoice.MODE_LOCKED:
             if not av:
                 self.mode = AvatarChoice.MODE_CREATE
                 self.name = ''
                 self.dna = None
+                self.accessories = None
             else:
                 self.mode = AvatarChoice.MODE_CHOOSE
                 self.name = av.name
                 self.dna = ToonDNA.ToonDNA(av.dna)
+                self.accessories = ToonDNA.makeAccessoriesFromNetString(av.accessories)
                 self.wantName = av.wantName
                 self.approvedName = av.approvedName
                 self.rejectedName = av.rejectedName
@@ -130,6 +133,8 @@ class AvatarChoice(DirectButton):
             self.head.instanceTo(self.stateNodePath[2], 20)
             self.headModel = ToonHead.ToonHead()
             self.headModel.setupHead(self.dna, forGui=1)
+            self.headModel.generateHat(self.dna, self.accessories['hat'])
+            self.headModel.generateGlasses(self.dna, self.accessories['glasses'])
             self.headModel.reparentTo(self.head)
             animalStyle = self.dna.getAnimal()
             bodyScale = ToontownGlobals.toonBodyScales[animalStyle]

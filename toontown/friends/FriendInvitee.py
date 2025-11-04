@@ -11,9 +11,10 @@ from otp.otpbase import OTPGlobals
 class FriendInvitee(ToonHeadDialog.ToonHeadDialog):
     notify = DirectNotifyGlobal.directNotify.newCategory('FriendInvitee')
 
-    def __init__(self, avId, avName, avDNA, context, **kw):
+    def __init__(self, avId, avName, avDNA, avAccessories, context, **kw):
         self.avId = avId
         self.avDNA = avDNA
+        self.avAccessories = avAccessories
         self.context = context
         self.avName = avName
         if len(base.localAvatar.friendsList) >= MaxFriends:
@@ -42,7 +43,7 @@ class FriendInvitee(ToonHeadDialog.ToonHeadDialog):
          ('pos', (0.45, 0, 0.75), None),
          ('scale', 0.75, None))
         self.defineoptions(kw, optiondefs)
-        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA)
+        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA, self.avAccessories)
         self.accept('cancelFriendInvitation', self.__handleCancelFromAbove)
         self.initialiseoptions(FriendInvitee)
         self.show()

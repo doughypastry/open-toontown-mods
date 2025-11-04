@@ -2397,6 +2397,104 @@ def isValidAccessory(itemIdx, textureIdx, colorIdx, which):
         return False
 
 
+def makeAccessoryNetString(hat, glasses, backpack, shoes):
+    dg = PyDatagram()
+    dg.addUint8(hat[0])
+    dg.addUint8(hat[1])
+    dg.addUint8(hat[2])
+    dg.addUint8(glasses[0])
+    dg.addUint8(glasses[1])
+    dg.addUint8(glasses[2])
+    dg.addUint8(backpack[0])
+    dg.addUint8(backpack[1])
+    dg.addUint8(backpack[2])
+    dg.addUint8(shoes[0])
+    dg.addUint8(shoes[1])
+    dg.addUint8(shoes[2])
+    return dg.getMessage()
+
+
+def makeAccessoriesFromNetString(string):
+    dg = PyDatagram(string)
+    dgi = PyDatagramIterator(dg)
+    hat = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    glasses = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    backpack = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    shoes = (dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+    return {
+        'hat': hat,
+        'glasses': glasses,
+        'backpack': backpack,
+        'shoes': shoes
+    }
+
+
+def makeEmptyAccessories():
+    noAccessory = (0, 0, 0)
+
+    return {
+        'hat': noAccessory,
+        'glasses': noAccessory,
+        'backpack': noAccessory,
+        'shoes': noAccessory
+    }
+
+
+def makeEmptyAccessoriesNetString():
+    noAccessory = (0, 0, 0)
+
+    return makeAccessoryNetString(noAccessory, noAccessory, noAccessory, noAccessory)
+
+
+def isValidAccessoryNetString(string):
+    dg = PyDatagram(string)
+    dgi = PyDatagramIterator(dg)
+    if dgi.getRemainingSize() != 12:
+        return False
+
+    hatModelIndex = dgi.getUint8()
+    hatTextureIndex = dgi.getUint8()
+    hatColorIndex = dgi.getUint8()
+    if hatModelIndex >= len(ToonDNA.HatModels):
+        return False
+    if hatTextureIndex >= len(ToonDNA.HatTextures):
+        return False
+    if hatColorIndex != 0:
+        return False
+
+    glassesModelIndex = dgi.getUint8()
+    glassesTextureIndex = dgi.getUint8()
+    glassesColorIndex = dgi.getUint8()
+    if glassesModelIndex >= len(ToonDNA.GlassesModels):
+        return False
+    if glassesTextureIndex >= len(ToonDNA.GlassesTextures):
+        return False
+    if glassesColorIndex != 0:
+        return False
+
+    backpackModelIndex = dgi.getUint8()
+    backpackTextureIndex = dgi.getUint8()
+    backpackColorIndex = dgi.getUint8()
+    if backpackModelIndex >= len(ToonDNA.BackpackModels):
+        return False
+    if backpackTextureIndex >= len(ToonDNA.BackpackTextures):
+        return False
+    if backpackColorIndex != 0:
+        return False
+
+    shoesModelIndex = dgi.getUint8()
+    shoesTextureIndex = dgi.getUint8()
+    shoesColorIndex = dgi.getUint8()
+    if shoesModelIndex >= len(ToonDNA.ShoesModels):
+        return False
+    if shoesTextureIndex >= len(ToonDNA.ShoesTextures):
+        return False
+    if shoesColorIndex != 0:
+        return False
+
+    return True
+
+
 class ToonDNA(AvatarDNA.AvatarDNA):
 
     def __init__(self, str = None, type = None, dna = None, r = None, b = None, g = None):

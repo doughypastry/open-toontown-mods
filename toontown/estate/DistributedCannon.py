@@ -460,7 +460,7 @@ class DistributedCannon(DistributedObject.DistributedObject):
         toon.setPosHpr(0, 0, -(toon.getHeight() / 2.0), 0, -90, 0)
         self.toonModel = toonParent
         self.toonHead = ToonHead.ToonHead()
-        self.toonHead.setupHead(self.av.style)
+        self.toonHead.fromAvatar(self.av)
         self.toonHead.reparentTo(hidden)
         tag = NametagFloat3d()
         tag.setContents(Nametag.CSpeech | Nametag.CThought)

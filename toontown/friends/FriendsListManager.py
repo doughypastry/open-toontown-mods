@@ -135,17 +135,19 @@ class FriendsListManager:
     def __handleFriendAvatar(self, avId, avName, avDisableName):
         FriendInviter.showFriendInviter(avId, avName, avDisableName)
 
-    def __handleFriendInvitation(self, avId, avName, inviterDna, context):
+    def __handleFriendInvitation(self, avId, avName, inviterDna, inviterAccessories, context):
         dna = ToonDNA.ToonDNA()
         dna.makeFromNetString(inviterDna)
+        accessories = ToonDNA.makeAccessoriesFromNetString(inviterAccessories)
         if not base.cr.avatarFriendsManager.checkIgnored(avId):
-            FriendInvitee.FriendInvitee(avId, avName, dna, context)
+            FriendInvitee.FriendInvitee(avId, avName, dna, accessories, context)
 
-    def __handlePlayerFriendInvitation(self, avId, avName, inviterDna = None, context = None):
+    def __handlePlayerFriendInvitation(self, avId, avName, inviterDna = None, inviterAccessories = None, context = None):
         self.notify.debug('incoming switchboard friend event')
         self.friendsRequestQueue.append((avId,
          avName,
          inviterDna,
+         inviterAccessories,
          context))
         if base.cr.friendManager.getAvailable():
             self.processQueuedRequests()
@@ -184,5 +186,6 @@ class FriendsListManager:
             if friendToon:
                 print('got toon')
                 dna = friendToon.getStyle()
-                FriendNotifier.FriendNotifier(avId, friendToon.getName(), dna, None)
+                accessories = friendToon.getAccessoryData()
+                FriendNotifier.FriendNotifier(avId, friendToon.getName(), dna, accessories, None)
         return

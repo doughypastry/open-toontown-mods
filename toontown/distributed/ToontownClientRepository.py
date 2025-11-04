@@ -238,9 +238,9 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
                 self.notify.info('================')
                 self.notify.info('Chose avatar id: %s' % av.id)
                 self.notify.info('Chose avatar name: %s' % av.name)
-                dna = ToonDNA.ToonDNA()
-                dna.makeFromNetString(av.dna)
                 if base.logPrivateInfo:
+                    dna = ToonDNA.ToonDNA()
+                    dna.makeFromNetString(av.dna)
                     self.notify.info('Chose avatar dna: %s' % (dna.asTuple(),))
                     self.notify.info('Chose avatar position: %s' % av.position)
                     self.notify.info('isPaid: %s' % self.isPaid())
@@ -297,7 +297,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
             self.newPotAv = PotentialAvatar.PotentialAvatar('deleteMe', ['',
              '',
              '',
-             ''], newDNA.makeNetString(), index, 1)
+             ''], newDNA.makeNetString(), ToonDNA.makeEmptyAccessoriesNetString(), index, 1)
             avList.append(self.newPotAv)
         base.transitions.noFade()
         self.avCreate = MakeAToon.MakeAToon(self.loginFSM, avList, 'makeAToonComplete', index, self.isPaid())

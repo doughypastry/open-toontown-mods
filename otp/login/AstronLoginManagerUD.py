@@ -20,7 +20,7 @@ from direct.distributed.MsgTypes import (
 from otp.otpbase import OTPGlobals
 
 from toontown.makeatoon.NameGenerator import NameGenerator
-from toontown.toon.ToonDNA import ToonDNA
+from toontown.toon import ToonDNA
 from toontown.toonbase import TTLocalizer
 
 
@@ -399,7 +399,14 @@ class GetAvatarsOperation(AvatarOperation):
                 # unknown name state.
                 nameState = 0
 
-            potentialAvatars.append([avId, name, fields['setDNAString'][0], index, nameState])
+            # We don't store accessory data as a blob, so we make that up here.
+            hat = fields['setHat']
+            glasses = fields['setGlasses']
+            backpack = fields['setBackpack']
+            shoes = fields['setShoes']
+            accessoryData = ToonDNA.makeAccessoryNetString(hat, glasses, backpack, shoes)
+
+            potentialAvatars.append([avId, name, fields['setDNAString'][0], accessoryData, index, nameState])
 
         self.loginManager.sendUpdateToAccountId(self.sender, 'avatarListResponse', [potentialAvatars])
         self._handleDone()
@@ -420,7 +427,7 @@ class CreateAvatarOperation(GameOperation):
             return
 
         # Check if this DNA is valid:
-        dna = ToonDNA()
+        dna = ToonDNA.ToonDNA()
         valid = dna.isValidNetString(avDNA)
         if not valid:
             # This DNA is invalid! Close the connection.
@@ -462,7 +469,7 @@ class CreateAvatarOperation(GameOperation):
         self.__handleCreateAvatar()
 
     def __handleCreateAvatar(self):
-        dna = ToonDNA()
+        dna = ToonDNA.ToonDNA()
         dna.makeFromNetString(self.avDNA)
         colorString = TTLocalizer.NumToColor[dna.headColor]
         animalType = TTLocalizer.AnimalToSpecies[dna.getAnimal()]

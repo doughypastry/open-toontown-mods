@@ -74,8 +74,8 @@ class FriendManager(DistributedObject.DistributedObject):
         self.notify.debug('Client: friendResponse(%d, %d)' % (yesNoMaybe, context))
         messenger.send('friendResponse', [yesNoMaybe, context])
 
-    def inviteeFriendQuery(self, inviterId, inviterName, inviterDna, context):
-        self.notify.debug('Client: inviteeFriendQuery(%d, %s, dna, %d)' % (inviterId, inviterName, context))
+    def inviteeFriendQuery(self, inviterId, inviterName, inviterDna, inviterAccessories, context):
+        self.notify.debug('Client: inviteeFriendQuery(%d, %s, dna, accessories, %d)' % (inviterId, inviterName, context))
         if not hasattr(base, 'localAvatar'):
             self.up_inviteeFriendConsidering(0, context)
             return
@@ -90,6 +90,7 @@ class FriendManager(DistributedObject.DistributedObject):
             messenger.send('friendInvitation', [inviterId,
              inviterName,
              inviterDna,
+             inviterAccessories,
              context])
 
     def inviteeCancelFriendQuery(self, context):

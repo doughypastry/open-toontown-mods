@@ -53,11 +53,20 @@ class CatalogEmoteItem(CatalogItem.CatalogItem):
         from otp.avatar import Emote
         self.hasPicture = True
         if self.emoteIndex in Emote.globalEmote.getHeadEmotes():
+            # There are no Cattlelog items in TTO that are merely head emotes,
+            # so this ends up being unused. If you don't want the hat and
+            # glasses to show up, comment the 'toon.fromAvatar(...)' line and
+            # uncomment the 'toon.setupHead(...)' one.
             toon = ToonHead.ToonHead()
-            toon.setupHead(avatar.style, forGui=1)
+            toon.fromAvatar(avatar)
+            # toon.setupHead(avatar.style, forGui=1)
         else:
             toon = Toon.Toon()
             toon.setDNA(avatar.style)
+            toon.setHat(*avatar.hat)
+            toon.setGlasses(*avatar.glasses)
+            toon.setBackpack(*avatar.backpack)
+            toon.setShoes(*avatar.shoes)
             toon.loop('neutral')
         toon.setH(180)
         model, ival = self.makeFrameModel(toon, 0)
@@ -89,13 +98,14 @@ class CatalogEmoteItem(CatalogItem.CatalogItem):
         if track != None:
             track = Sequence(Sequence(track, duration=0), Wait(duration + 2), name=name)
         else:
-            track = Sequence(Func(Emote.globalEmote.doEmote, toon, self.emoteIndex), Wait(duration + 4), name=name)
+            track = Sequence(Func(Emote.globalEmote.doEmote, self.pictureToon, self.emoteIndex), Wait(duration + 4), name=name)
         return track
 
     def cleanupPicture(self):
         CatalogItem.CatalogItem.cleanupPicture(self)
-        self.pictureToon.emote.finish()
-        self.pictureToon.emote = None
+        if self.pictureToon.emote:
+            self.pictureToon.emote.finish()
+            self.pictureToon.emote = None
         self.pictureToon.delete()
         self.pictureToon = None
         return

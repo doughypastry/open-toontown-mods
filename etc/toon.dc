@@ -1609,6 +1609,7 @@ struct savedBy {
   uint32 avId;
   string name;
   blob dna;
+  blob accessories;
 }
 
 dclass DistributedToonInterior : DistributedObject {

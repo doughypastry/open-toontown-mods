@@ -16,7 +16,7 @@ class ToonHeadFrame(DirectFrame):
         self.head.setPosHprScale(-0.27, 10.0, -0.09, 180.0, 0.0, 0.0, 0.2, 0.2, 0.2)
         self.headModel = ToonHead.ToonHead()
         self.headModel.startBlink()
-        self.headModel.setupHead(self.av.style, forGui=1)
+        self.headModel.fromAvatar(self.av, forGui=1)
         self.headModel.reparentTo(self.head)
         self.tag1Node = NametagFloat2d()
         self.tag1Node.setContents(Nametag.CSpeech | Nametag.CThought)

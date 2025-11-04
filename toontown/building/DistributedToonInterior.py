@@ -146,19 +146,22 @@ class DistributedToonInterior(DistributedObject.DistributedObject):
         numToons = len(self.savedBy)
         pos = 1.25 - 1.25 * numToons
         trophy = hidden.attachNewNode('trophy')
-        for avId, name, dnaString in self.savedBy:
-            frame = self.buildFrame(name, dnaString)
+        for avId, name, dnaString, accessoryString in self.savedBy:
+            frame = self.buildFrame(name, dnaString, accessoryString)
             frame.reparentTo(trophy)
             frame.setPos(pos, 0, 0)
             pos += 2.5
 
         return trophy
 
-    def buildFrame(self, name, dnaString):
+    def buildFrame(self, name, dnaString, accessoryString):
         frame = loader.loadModel('phase_3.5/models/modules/trophy_frame')
         dna = ToonDNA.ToonDNA(dnaString)
+        accessories = ToonDNA.makeAccessoriesFromNetString(accessoryString)
         head = ToonHead.ToonHead()
         head.setupHead(dna)
+        head.generateHat(dna, accessories['hat'])
+        head.generateGlasses(dna, accessories['glasses'])
         head.setPosHprScale(0, -0.05, -0.05, 180, 0, 0, 0.55, 0.02, 0.55)
         if dna.head[0] == 'r':
             head.setZ(-0.15)
@@ -167,6 +170,14 @@ class DistributedToonInterior(DistributedObject.DistributedObject):
         elif dna.head[0] == 'm':
             head.setScale(0.45, 0.02, 0.45)
         head.reparentTo(frame)
+        # The eyes are reordered to draw on front of everything,
+        # which is a little annoying in this situation.
+        # So we offset the accessories a little.
+        # TODO: See if there is a better way of doing this.
+        for hatNode in head.hatNodes:
+            hatNode.setY(frame, hatNode.getY(frame) - 0.02)
+        for glassesNode in head.glassesNodes:
+            glassesNode.setY(frame, glassesNode.getY(frame) - 0.02)
         nameText = TextNode('trophy')
         nameText.setFont(ToontownGlobals.getToonFont())
         nameText.setAlign(TextNode.ACenter)

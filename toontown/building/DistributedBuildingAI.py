@@ -292,13 +292,13 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def updateSavedBy(self, savedBy):
         if self.savedBy:
-            for avId, name, dna in self.savedBy:
+            for avId, name, dna, accessories in self.savedBy:
                 if not ZoneUtil.isWelcomeValley(self.zoneId):
                     self.trophyMgr.removeTrophy(avId, self.numFloors)
 
         self.savedBy = savedBy
         if self.savedBy:
-            for avId, name, dna in self.savedBy:
+            for avId, name, dna, accessories in self.savedBy:
                 if not ZoneUtil.isWelcomeValley(self.zoneId):
                     self.trophyMgr.addTrophy(avId, name, self.numFloors)
 

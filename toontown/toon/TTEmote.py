@@ -602,7 +602,7 @@ class TTEmote(Emote.Emote):
             if duration > 0:
                 track = Sequence(track, Func(returnToLastAnim, toon))
             track = Sequence(track, Func(self.releaseAll, toon, 'doEmote'), autoFinish=1)
-            if toon.isLocal():
+            if hasattr(toon, 'isLocal') and toon.isLocal():
                 track = Sequence(track, Func(clearEmoteTrack))
         if track != None:
             if toon.emote != None:

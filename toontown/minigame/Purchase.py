@@ -721,7 +721,7 @@ class PurchaseHeadFrame(DirectFrame):
         self.head = self.stateNodePath[0].attachNewNode('head', 20)
         self.head.setPosHprScale(-0.22, 10.0, -0.1, 180.0, 0.0, 0.0, 0.1, 0.1, 0.1)
         self.headModel = ToonHead.ToonHead()
-        self.headModel.setupHead(self.av.style, forGui=1)
+        self.headModel.fromAvatar(self.av, forGui=1)
         self.headModel.reparentTo(self.head)
         self.tag2Node = NametagFloat2d()
         self.tag2Node.setContents(Nametag.CName)

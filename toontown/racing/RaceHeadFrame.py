@@ -23,7 +23,7 @@ class RaceHeadFrame(DirectFrame):
         self.head = self.stateNodePath[0].attachNewNode('head', 20)
         self.head.setPosHprScale(0, -0.5, -0.09, 180.0, 0.0, 0.0, 0.2, 0.2, 0.2)
         self.headModel = ToonHead.ToonHead()
-        self.headModel.setupHead(av.style, forGui=1)
+        self.headModel.fromAvatar(av, forGui=1)
         self.headModel.reparentTo(self.head)
 
     def destroy(self):

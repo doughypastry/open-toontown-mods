@@ -513,6 +513,14 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def getStyle(self):
         return self.dna
 
+    def getAccessoryData(self):
+        return {
+            'hat': self.getHat(),
+            'glasses': self.getGlasses(),
+            'backpack': self.getBackpack(),
+            'shoes': self.getShoes()
+        }
+
     def b_setExperience(self, experience):
         self.d_setExperience(experience)
         self.setExperience(experience)

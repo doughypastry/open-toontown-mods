@@ -11,10 +11,11 @@ from otp.otpbase import OTPGlobals
 class FriendNotifier(ToonHeadDialog.ToonHeadDialog):
     notify = DirectNotifyGlobal.directNotify.newCategory('FriendNotifier')
 
-    def __init__(self, avId, avName, avDNA, context, **kw):
+    def __init__(self, avId, avName, avDNA, avAccessories, context, **kw):
         self.avId = avId
         self.avName = avName
         self.avDNA = avDNA
+        self.avAccessories = avAccessories
         self.context = context
         text = OTPLocalizer.FriendNotifictation % self.avName
         style = TTDialog.Acknowledge
@@ -34,7 +35,7 @@ class FriendNotifier(ToonHeadDialog.ToonHeadDialog):
          ('pos', (0.45, 0, 0.75), None),
          ('scale', 0.75, None))
         self.defineoptions(kw, optiondefs)
-        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA)
+        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA, self.avAccessories)
         self.initialiseoptions(FriendNotifier)
         self.show()
         return

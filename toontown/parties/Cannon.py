@@ -129,7 +129,7 @@ class Cannon:
 
     def __createToonHead(self, toon):
         self.toonHead = ToonHead.ToonHead()
-        self.toonHead.setupHead(toon.style)
+        self.toonHead.fromAvatar(toon)
         self.toonHead.reparentTo(hidden)
         tag = NametagFloat3d()
         tag.setContents(Nametag.CSpeech | Nametag.CThought)

@@ -7,11 +7,15 @@ from toontown.toon import ToonHead
 class ToonHeadDialog(TTDialog.TTDialog):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonHeadDialog')
 
-    def __init__(self, dna, **kw):
+    def __init__(self, dna, accessories, **kw):
         self.dna = dna
+        self.accessories = accessories
         head = hidden.attachNewNode('head', 20)
         self.headModel = ToonHead.ToonHead()
         self.headModel.setupHead(self.dna, forGui=1)
+        if self.accessories:
+            self.headModel.generateHat(self.dna, self.accessories['hat'])
+            self.headModel.generateGlasses(self.dna, self.accessories['glasses'])
         self.headModel.fitAndCenterHead(1.0, forGui=1)
         self.headModel.reparentTo(head)
         self.headModel.setName('headModel')

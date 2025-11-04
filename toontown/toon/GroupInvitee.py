@@ -21,6 +21,7 @@ class GroupInvitee(ToonHeadDialog.ToonHeadDialog):
         self.av = toon
         self.avId = toon.doId
         self.avDNA = toon.getStyle()
+        self.avAccessories = toon.getAccessoryData()
         self.party = party
         text = TTLocalizer.BoardingInviteeMessage % self.avName
         style = TTDialog.TwoChoice
@@ -40,7 +41,7 @@ class GroupInvitee(ToonHeadDialog.ToonHeadDialog):
          ('pos', (0.45, 0, 0.75), None),
          ('scale', 0.75, None))
         self.defineoptions(kw, optiondefs)
-        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA)
+        ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA, self.avAccessories)
         self.initialiseoptions(GroupInvitee)
         self.show()
         return

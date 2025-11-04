@@ -65,7 +65,7 @@ class ToonAvatarPanel(AvatarPanelBase.AvatarPanelBase):
         self.head = self.frame.attachNewNode('head')
         self.head.setPos(0.02, 0, 0.31)
         self.headModel = ToonHead.ToonHead()
-        self.headModel.setupHead(avatar.style, forGui=1)
+        self.headModel.fromAvatar(avatar, forGui=1)
         self.headModel.fitAndCenterHead(0.175, forGui=1)
         self.headModel.reparentTo(self.head)
 
