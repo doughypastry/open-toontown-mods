@@ -38,13 +38,31 @@ Removes gender-specific restrictions, and adds an 'eyelashes' option in the Make
 **Changes `toon.dc`:** Yes  
 **Changes the database structure:** No  
 
+## `accessory-rendering`
+<img src="docs/screenshots/accessory-rendering-1.png" alt="The avatar selection screen. The accessories are visible on the Toon heads." width="400" height="300">
+<img src="docs/screenshots/accessory-rendering-2.png" alt="Player info panel with the accessories being rendered." width="400" height="300">
+<img src="docs/screenshots/accessory-rendering-3.png" alt="Toon portrait in a building. The accessories are visible in the portrait." width="400" height="300">
+<img src="docs/screenshots/accessory-rendering-4.png" alt="A game of golf. The accessories of the other player are visible on the HUD." width="400" height="300">
+
+
+Makes accessories render where they previously did not.
+
+**Feature:** No  
+**Bugfix:** Yes  
+**Changes `toon.dc`:** Yes  
+**Changes the database structure:** No  
+
+---
+
 ## `accessories-in-catalog-gui`
 <img src="docs/screenshots/accessories-in-catalog-gui.png" alt='A Cattlelog page showing "Actions Lessons". The accessories the player is wearing can be seen on the Toons.' width="400" height="300">
 
+### NOTE: `accessory-rendering` supersedes this branch.
+
 This very simple modification to `CatalogEmoteItem` makes accessories visible in the "Acting Lessons" Cattlelog items.
 
-**Feature:** Yes  
-**Bugfix:** ?  
+**Feature:** No  
+**Bugfix:** Yes  
 **Changes `toon.dc`:** No  
 **Changes the database structure:** Not applicable  
 
