@@ -2689,7 +2689,7 @@ dclass DistributedGardenPlot : DistributedLawnDecor {
   plantFlower(uint8, uint8) airecv clsend;
   plantGagTree(uint8, uint8) airecv clsend;
   plantStatuary(uint8) airecv clsend;
-  plantToonStatuary(uint8, uint16) airecv clsend;
+  plantToonStatuary(uint8, blob) airecv clsend;
   plantNothing(uint8) airecv clsend;
 };
 
@@ -2704,7 +2704,7 @@ dclass DistributedStatuary : DistributedLawnDecor {
 };
 
 dclass DistributedToonStatuary : DistributedStatuary {
-  setOptional(uint16) required broadcast ram;
+  setOptional(blob) required broadcast ram;
 };
 
 dclass DistributedAnimatedStatuary : DistributedStatuary {

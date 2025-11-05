@@ -239,7 +239,7 @@ class DistributedGardenPlot(DistributedLawnDecor.DistributedLawnDecor):
         self.popupToonStatueSelectionGui(species)
         return
 
-    def __handleToonStatueSelectionDone(self, species, willPlant = 0, recipeStr = '', dnaCode = -1):
+    def __handleToonStatueSelectionDone(self, species, willPlant = 0, recipeStr = '', appearanceBlob = ''):
         self.ignore(self.toonStatueSelectionDoneEvent)
         self.ignore('stoppedAsleep')
         self.toonStatueSelectionGui.destroy()
@@ -247,7 +247,7 @@ class DistributedGardenPlot(DistributedLawnDecor.DistributedLawnDecor):
         base.localAvatar.showGardeningGui()
         base.localAvatar.removeShovelRelatedDoId(self.doId)
         if willPlant:
-            self.sendUpdate('plantToonStatuary', [species, dnaCode])
+            self.sendUpdate('plantToonStatuary', [species, appearanceBlob])
         else:
             self.popupItemPlantingGui()
         return

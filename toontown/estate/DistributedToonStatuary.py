@@ -2,6 +2,8 @@ from toontown.estate import DistributedStatuary
 from toontown.estate import DistributedLawnDecor
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.ShowBase import *
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import *
 from toontown.toon import Toon
 from toontown.toon import ToonDNA
@@ -11,8 +13,7 @@ from toontown.toonbase import ToontownGlobals
 from panda3d.core import NodePath
 from panda3d.core import Point3
 
-def dnaCodeFromToonDNA(dna):
-
+def appearanceFromToon(toon):
     def findItemNumInList(wantItem, wantList):
         i = 0
         for item in wantList:
@@ -22,14 +23,38 @@ def dnaCodeFromToonDNA(dna):
 
         return i
 
+    dna = toon.style
     if dna.gender == 'f':
         genderTypeNum = 0
     else:
         genderTypeNum = 1
-    legTypeNum = findItemNumInList(dna.legs, ToonDNA.toonLegTypes) << 1
-    torsoTypeNum = findItemNumInList(dna.torso, ToonDNA.toonTorsoTypes) << 3
-    headTypeNum = findItemNumInList(dna.head, ToonDNA.toonHeadTypes) << 7
-    return headTypeNum | torsoTypeNum | legTypeNum | genderTypeNum
+    legTypeNum = findItemNumInList(dna.legs, ToonDNA.toonLegTypes)
+    torsoTypeNum = findItemNumInList(dna.torso, ToonDNA.toonTorsoTypes)
+    headTypeNum = findItemNumInList(dna.head, ToonDNA.toonHeadTypes)
+
+    dg = PyDatagram()
+    dg.addUint8(legTypeNum)
+    dg.addUint8(torsoTypeNum)
+    dg.addUint8(headTypeNum)
+    dg.addUint8(genderTypeNum)
+
+    # Store the accessories.
+    # We only need the model and the texture.
+    hat = toon.getHat()
+    glasses = toon.getGlasses()
+    backpack = toon.getBackpack()
+    shoes = toon.getShoes()
+
+    dg.addUint8(hat[0])
+    dg.addUint8(hat[1])
+    dg.addUint8(glasses[0])
+    dg.addUint8(glasses[1])
+    dg.addUint8(backpack[0])
+    dg.addUint8(backpack[1])
+    dg.addUint8(shoes[0])
+    dg.addUint8(shoes[1])
+
+    return dg.getMessage()
 
 
 class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
@@ -59,6 +84,10 @@ class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
         self.toon = Toon.Toon()
         self.toon.setPos(0, 0, 0)
         self.toon.setDNA(dna)
+        self.toon.setHat(self.hatType, self.hatTexture, 0)
+        self.toon.setGlasses(self.glassesType, self.glassesTexture, 0)
+        self.toon.setBackpack(self.backpackType, self.backpackTexture, 0)
+        self.toon.setShoes(self.shoesType, self.shoesTexture, 0)
         self.toon.initializeBodyCollisions('toonStatue')
         self.toon.stopBlink()
         self.toon.stopLookAround()
@@ -77,10 +106,11 @@ class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
         self.toon = None
         return
 
+    # This is unused.
     def copyLocalAvatarToon(self):
         self.toon = Toon.Toon()
         self.toon.reparentTo(render)
-        self.toon.setDNA(base.localAvatar.style)
+        self.toon.copyLook(base.localAvatar)
         self.toon.setPos(base.localAvatar, 0, 0, 0)
         self.toon.pose('victory', 30)
         self.toon.setH(180)
@@ -184,14 +214,64 @@ class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
                 lashesClosed.setTexture(tsLashes, stoneTex)
                 lashesClosed.setColor(VBase4(1, 1, 1, 0.4), 10)
 
+        def makeAccessoryGrayscale(node, texturePath):
+            geomState = node.getGeomState(0)
+            texAttrib = geomState.getAttrib(TextureAttrib.getClassType())
+            if not texAttrib:
+                return
+
+            # Load the actual texture of the accessory, if it has one defined
+            if texturePath:
+                sourceTex = loader.loadTexture(texturePath, okMissing=True)
+            else:
+                sourceTex = None
+
+            # Make a copy of the texture it already has
+            stage = texAttrib.getOnStage(0)
+            texture = texAttrib.getOnTexture(stage)
+            if not texture:
+                return
+            texture = texture.makeCopy()
+
+            # Store the source texture into a PNMImage, make it grayscale, then
+            # load it into the target texture
+            pnm = PNMImage()
+            if sourceTex:
+                sourceTex.store(pnm)
+            else:
+                texture.store(pnm)
+            pnm.makeGrayscale()
+            texture.load(pnm)
+
+            # Re-add the texture
+            attrib = texAttrib.addOnStage(stage, texture)
+            node.setGeomState(0, geomState.setAttrib(attrib))
+
+        def makeAccessoryPathGrayscale(node, texturePath):
+            for np in node.findAllMatches('**/+GeomNode'):
+                makeAccessoryGrayscale(np.node(), texturePath)
+
+        # Give the stone appearance to the accessories
+        for node in self.toon.hatNodes:
+            makeAccessoryPathGrayscale(node, ToonDNA.HatTextures[self.hatTexture])
+        for node in self.toon.glassesNodes:
+            makeAccessoryPathGrayscale(node, ToonDNA.GlassesTextures[self.glassesTexture])
+        for node in self.toon.backpackNodes:
+            makeAccessoryPathGrayscale(node, ToonDNA.BackpackTextures[self.backpackTexture])
+        for geom in self.toon.findAllMatches('**/%s;+s' % ToonDNA.ShoesModels[self.shoesType]):
+            makeAccessoryGrayscale(geom.node(), ToonDNA.ShoesTextures[self.shoesTexture])
+
     def setOptional(self, optional):
         self.optional = optional
 
     def getToonPropertiesFromOptional(self):
-        genderTypeNum = self.optional & 1
-        legTypeNum = (self.optional & 6) >> 1
-        torsoTypeNum = (self.optional & 120) >> 3
-        headTypeNum = (self.optional & 65408) >> 7
+        dg = PyDatagram(self.optional)
+        dgi = PyDatagramIterator(dg)
+
+        legTypeNum = dgi.getUint8()
+        torsoTypeNum = dgi.getUint8()
+        headTypeNum = dgi.getUint8()
+        genderTypeNum = dgi.getUint8()
         if genderTypeNum == 0:
             self.gender = 'f'
         else:
@@ -202,6 +282,15 @@ class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
             self.torsoType = ToonDNA.toonTorsoTypes[torsoTypeNum]
         if headTypeNum <= len(ToonDNA.toonHeadTypes):
             self.headType = ToonDNA.toonHeadTypes[headTypeNum]
+
+        self.hatType = dgi.getUint8()
+        self.hatTexture = dgi.getUint8()
+        self.glassesType = dgi.getUint8()
+        self.glassesTexture = dgi.getUint8()
+        self.backpackType = dgi.getUint8()
+        self.backpackTexture = dgi.getUint8()
+        self.shoesType = dgi.getUint8()
+        self.shoesTexture = dgi.getUint8()
 
     def poseToonFromTypeIndex(self, typeIndex):
         if typeIndex == 205:

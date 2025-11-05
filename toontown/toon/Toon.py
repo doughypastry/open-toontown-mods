@@ -1144,6 +1144,13 @@ class Toon(Avatar.Avatar, ToonHead):
         self.setBackpack(*accessories['backpack'])
         self.setShoes(*accessories['shoes'])
 
+    def copyLook(self, avatar):
+        self.setDNA(avatar.getStyle())
+        self.setHat(*avatar.getHat())
+        self.setGlasses(*avatar.getGlasses())
+        self.setBackpack(*avatar.getBackpack())
+        self.setShoes(*avatar.getShoes())
+
     def getDialogueArray(self):
         animalType = self.style.getType()
         if animalType == 'dog':

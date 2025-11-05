@@ -1,6 +1,7 @@
 from toontown.estate import PlantingGUI
 from direct.gui.DirectGui import *
 from panda3d.core import *
+from panda3d.otp import *
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
@@ -31,7 +32,7 @@ class ToonStatueSelectionGUI(DirectFrame):
         buttons.removeNode()
         self.ffList = []
         self.friends = {}
-        self.doId2Dna = {}
+        self.doId2Avatar = {}
         self.textRolloverColor = Vec4(1, 1, 0, 1)
         self.textDownColor = Vec4(0.5, 0.9, 1, 1)
         self.textDisabledColor = Vec4(0.4, 0.8, 0.4, 1)
@@ -47,7 +48,7 @@ class ToonStatueSelectionGUI(DirectFrame):
 
         self.ffList = []
         self.friends = {}
-        self.doId2Dna = {}
+        self.doId2Avatar = {}
         self.scrollList.destroy()
         DirectFrame.destroy(self)
         return
@@ -57,7 +58,7 @@ class ToonStatueSelectionGUI(DirectFrame):
         messenger.send('wakeup')
 
     def __accept(self):
-        messenger.send(self.doneEvent, [1, '', DistributedToonStatuary.dnaCodeFromToonDNA(self.dnaSelected)])
+        messenger.send(self.doneEvent, [1, '', DistributedToonStatuary.appearanceFromToon(self.avatarSelected)])
         messenger.send('wakeup')
 
     def createFriendsList(self):
@@ -95,8 +96,8 @@ class ToonStatueSelectionGUI(DirectFrame):
     def __makeFFlist(self):
         playerAvatar = (base.localAvatar.doId, base.localAvatar.name, NametagGroup.CCNonPlayer)
         self.ffList.append(playerAvatar)
-        self.dnaSelected = base.localAvatar.style
-        self.createPreviewToon(self.dnaSelected)
+        self.avatarSelected = base.localAvatar
+        self.createPreviewToon(self.avatarSelected)
         for familyMember in base.cr.avList:
             if familyMember.id != base.localAvatar.doId:
                 newFF = (familyMember.id, familyMember.name, NametagGroup.CCNonPlayer)
@@ -132,9 +133,9 @@ class ToonStatueSelectionGUI(DirectFrame):
         messenger.send('wakeup')
         if self.checkFamily(friendId):
             if friendId == base.localAvatar.doId:
-                self.createPreviewToon(base.localAvatar.style)
-            elif friendId in self.doId2Dna:
-                self.createPreviewToon(self.doId2Dna[friendId])
+                self.createPreviewToon(base.localAvatar)
+            elif friendId in self.doId2Avatar:
+                self.createPreviewToon(self.doId2Avatar[friendId])
             else:
                 familyAvatar = DistributedToon.DistributedToon(base.cr)
                 familyAvatar.doId = friendId
@@ -143,19 +144,19 @@ class ToonStatueSelectionGUI(DirectFrame):
         else:
             friend = base.cr.identifyFriend(friendId)
             if friend:
-                self.createPreviewToon(friend.style)
+                self.createPreviewToon(friend)
 
     def __handleFamilyAvatar(self, gotData, avatar, dclass):
-        self.doId2Dna[avatar.doId] = avatar.style
-        self.createPreviewToon(avatar.style)
+        self.doId2Avatar[avatar.doId] = avatar
+        self.createPreviewToon(avatar)
         avatar.delete()
 
-    def createPreviewToon(self, dna):
+    def createPreviewToon(self, avatar):
         if hasattr(self, 'previewToon'):
             self.previewToon.delete()
-        self.dnaSelected = dna
+        self.avatarSelected = avatar
         self.previewToon = Toon.Toon()
-        self.previewToon.setDNA(dna)
+        self.previewToon.copyLook(avatar)
         self.previewToon.loop('neutral')
         self.previewToon.setH(180)
         self.previewToon.setPos(-0.3, 0, -0.3)
